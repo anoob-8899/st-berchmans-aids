@@ -112,35 +112,7 @@ export default function UnifiedPortalLoginPage() {
         </div>
 
         {/* Quick Demo Role Switcher */}
-        <div className="bg-[#F7F8F9] p-3 rounded-2xl border border-slate-200 space-y-2">
-          <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider text-center">
-            ⚡ Instant Role Login (Demo Showcase)
-          </div>
-          <div className="grid grid-cols-3 gap-2">
-            <button
-              type="button"
-              onClick={() => quickLogin('student')}
-              className="py-2 px-2 rounded-xl text-[11px] font-bold uppercase tracking-wider bg-white border border-slate-200 text-slate-700 hover:bg-[#FFF5F0] hover:text-[#FA7538] hover:border-[#FA7538]/40 transition shadow-xs cursor-pointer"
-            >
-              Student
-            </button>
-            <button
-              type="button"
-              onClick={() => quickLogin('faculty')}
-              className="py-2 px-2 rounded-xl text-[11px] font-bold uppercase tracking-wider bg-white border border-slate-200 text-slate-700 hover:bg-[#EEF8F2] hover:text-[#2E7D50] hover:border-[#2E7D50]/40 transition shadow-xs cursor-pointer"
-            >
-              Faculty
-            </button>
-            <button
-              type="button"
-              onClick={() => quickLogin('admin')}
-              className="py-2 px-2 rounded-xl text-[11px] font-bold uppercase tracking-wider bg-white border border-slate-200 text-slate-700 hover:bg-slate-900 hover:text-white transition shadow-xs cursor-pointer"
-            >
-              Admin
-            </button>
-          </div>
-        </div>
-
+ 
         {/* Error Alert */}
         {errorMessage && (
           <div className="p-3 bg-rose-50 border border-rose-200 text-rose-700 rounded-xl text-xs flex items-start gap-2">
