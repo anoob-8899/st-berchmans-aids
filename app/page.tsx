@@ -202,7 +202,7 @@ export default function HomePage() {
                 Autonomous Syllabus
               </h3>
               <p className="text-xs text-[#5C6470] leading-relaxed mb-4">
-                Regulations 2024-2028 with semester credit splits, elective choices, and lab guidelines.
+                Regulations 2026–2030 with semester credit splits, elective choices, and lab guidelines.
               </p>
               <span className="inline-flex items-center text-xs font-bold text-[#FA7538]">
                 Explore Syllabus <ArrowRight className="w-3.5 h-3.5 ml-1" />

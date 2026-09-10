@@ -282,7 +282,7 @@ export const Header: React.FC = () => {
                     className="block px-3 py-2 text-sm text-slate-700 hover:bg-[#F7F8F9] hover:text-[#FA7538] rounded-xl"
                   >
                     <div className="font-medium">{t('nav.programs')}</div>
-                    <div className="text-xs text-slate-400">B.Sc. & M.Sc AI & DS</div>
+                    <div className="text-xs text-slate-400">B.Sc. AI & DS (2026–2030)</div>
                   </Link>
                   <Link
                     href="/academics/syllabus"

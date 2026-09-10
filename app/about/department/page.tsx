@@ -80,7 +80,7 @@ export default function DepartmentPage() {
           <div className="bg-[#12192B] text-white p-8 sm:p-10 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-6">
             <div>
               <h3 className="text-xl font-bold mb-2">Want to meet our professors or explore degree options?</h3>
-              <p className="text-sm text-slate-300">Discover B.Sc. AI & Data Science and M.Sc AI autonomous programs.</p>
+              <p className="text-sm text-slate-300">Discover the B.Sc. AI & Data Science (2026–2030) autonomous program.</p>
             </div>
             <div className="flex flex-wrap items-center gap-3">
               <Link

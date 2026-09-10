@@ -82,7 +82,7 @@ export default function SyllabusPage() {
 
             {/* Programme Filter */}
             <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto text-xs">
-              {['all', 'B.Sc. AI & Data Science', 'M.Sc AI'].map(prog => (
+              {['all', 'B.Sc. AI & Data Science'].map(prog => (
                 <button
                   key={prog}
                   type="button"

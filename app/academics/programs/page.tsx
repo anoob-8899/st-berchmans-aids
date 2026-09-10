@@ -51,21 +51,21 @@ export default function ProgramsPage() {
               </h2>
 
               <p className="text-sm sm:text-base text-[#5C6470] leading-relaxed">
-                A 3-year full-time vocational undergraduate program emphasizing 60% hands-on practical lab coursework and 40% foundational mathematical theory. Features multiple exit points, industrial internships, and deep dives into Python, Machine Learning, Computer Vision, and Big Data.
+                A 4-year full-time autonomous undergraduate program (Batch 2026–2030) emphasizing hands-on practical lab coursework, cutting-edge AI research, and foundational mathematical theory. Features industrial internships, projects, and deep dives into Python, Machine Learning, Computer Vision, Deep Learning, and Big Data Analytics.
               </p>
 
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-2 text-xs">
                 <div>
-                  <span className="text-slate-400 block">Duration:</span>
-                  <span className="font-bold text-slate-800">3 Years (6 Semesters)</span>
+                  <span className="text-slate-400 block">Duration & Batch:</span>
+                  <span className="font-bold text-slate-800">4 Years (2026–2030)</span>
                 </div>
                 <div>
                   <span className="text-slate-400 block">Eligibility:</span>
-                  <span className="font-bold text-slate-800">+2 with Mathematics</span>
+                  <span className="font-bold text-slate-800">+2 Higher Secondary with Mathematics</span>
                 </div>
                 <div>
                   <span className="text-slate-400 block">Internship:</span>
-                  <span className="font-bold text-emerald-700">Mandatory Final Sem</span>
+                  <span className="font-bold text-emerald-700">Mandatory Industry Project</span>
                 </div>
               </div>
             </div>
@@ -73,69 +73,16 @@ export default function ProgramsPage() {
             <div className="lg:col-span-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4 text-center">
               <h3 className="font-bold text-sm text-slate-800">Career Trajectories</h3>
               <ul className="text-xs text-[#5C6470] space-y-2 text-left">
-                <li className="flex items-center gap-2">✓ Junior Machine Learning Engineer</li>
-                <li className="flex items-center gap-2">✓ Data Analyst & BI Developer</li>
+                <li className="flex items-center gap-2">✓ AI & Machine Learning Engineer</li>
+                <li className="flex items-center gap-2">✓ Data Scientist & BI Developer</li>
                 <li className="flex items-center gap-2">✓ Python Full-Stack AI Developer</li>
-                <li className="flex items-center gap-2">✓ Computer Vision Specialist</li>
+                <li className="flex items-center gap-2">✓ Computer Vision & NLP Specialist</li>
               </ul>
               <Link
                 href="/academics/syllabus"
                 className="w-full py-3 px-4 rounded-full bg-[#12192B] text-white font-bold text-xs uppercase tracking-wider hover:bg-[#1C2640] transition block text-center"
               >
-                Download B.Sc. Syllabus →
-              </Link>
-            </div>
-          </div>
-
-          {/* Program 2: M.Sc Artificial Intelligence */}
-          <div className="bg-[#F7F8F9] p-8 sm:p-12 rounded-3xl border border-slate-200 shadow-sm grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            <div className="lg:col-span-8 space-y-4">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-[#2E7D50] text-white">
-                  Postgraduate Degree
-                </span>
-                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-white border border-slate-200 text-slate-700">
-                  Advanced Autonomous Research
-                </span>
-              </div>
-
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-[#1A1A1A]">
-                M.Sc in Artificial Intelligence
-              </h2>
-
-              <p className="text-sm sm:text-base text-[#5C6470] leading-relaxed">
-                A 2-year rigorous postgraduate degree for graduates seeking advanced research in Large Language Models, Generative Diffusion Networks, Reinforcement Learning, and Distributed High-Performance Computing.
-              </p>
-
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-2 text-xs">
-                <div>
-                  <span className="text-slate-400 block">Duration:</span>
-                  <span className="font-bold text-slate-800">2 Years (4 Semesters)</span>
-                </div>
-                <div>
-                  <span className="text-slate-400 block">Eligibility:</span>
-                  <span className="font-bold text-slate-800">B.Sc / B.Sc. / B.Tech</span>
-                </div>
-                <div>
-                  <span className="text-slate-400 block">Research Thesis:</span>
-                  <span className="font-bold text-purple-700">Scopus Publication Req.</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="lg:col-span-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4 text-center">
-              <h3 className="font-bold text-sm text-slate-800">Career Trajectories</h3>
-              <ul className="text-xs text-[#5C6470] space-y-2 text-left">
-                <li className="flex items-center gap-2">✓ AI Research Scientist</li>
-                <li className="flex items-center gap-2">✓ Enterprise LLM Engineer</li>
-                <li className="flex items-center gap-2">✓ Deep Learning Architect</li>
-                <li className="flex items-center gap-2">✓ Ph.D. & Academic Researcher</li>
-              </ul>
-              <Link
-                href="/academics/syllabus"
-                className="w-full py-3 px-4 rounded-full bg-[#12192B] text-white font-bold text-xs uppercase tracking-wider hover:bg-[#1C2640] transition block text-center"
-              >
-                Download M.Sc Syllabus →
+                Download B.Sc. Syllabus (2026–2030) →
               </Link>
             </div>
           </div>

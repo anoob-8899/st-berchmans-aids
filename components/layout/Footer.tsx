@@ -66,17 +66,12 @@ export function Footer() {
             <ul className="space-y-2.5 text-sm">
               <li>
                 <Link href="/academics/programs" className="hover:text-[#FA7538] transition-colors">
-                  B.Sc. AI & Data Science
-                </Link>
-              </li>
-              <li>
-                <Link href="/academics/programs" className="hover:text-[#FA7538] transition-colors">
-                  M.Sc Artificial Intelligence
+                  B.Sc. AI & Data Science (2026–2030)
                 </Link>
               </li>
               <li>
                 <Link href="/academics/syllabus" className="hover:text-[#FA7538] transition-colors">
-                  Course Syllabus (2024-28)
+                  Course Syllabus (2026–2030)
                 </Link>
               </li>
               <li>

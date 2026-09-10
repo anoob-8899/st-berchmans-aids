@@ -38,11 +38,11 @@ export const COLLEGE_INFO = {
 export const ANNOUNCEMENTS: Announcement[] = [
   {
     id: "ann-1",
-    title: "Applications Open for B.Sc. & M.Sc AI & Data Science 2026-27 Batch",
-    titleMl: "2026-27 ബാച്ചിലേക്കുള്ള ബി.വോക് & എം.എസ്.സി എ.ഐ പ്രവേശനത്തിന് അപേക്ഷ ക്ഷണിച്ചു",
+    title: "Applications Open for B.Sc. AI & Data Science 2026–2030 Batch",
+    titleMl: "2026–2030 ബാച്ചിലേക്കുള്ള ബി.എസ്.സി എ.ഐ & ഡാറ്റാ സയൻസ് പ്രവേശനത്തിന് അപേക്ഷ ക്ഷണിച്ചു",
     date: "September 05, 2026",
     category: "academic",
-    content: "Online registration for undergraduate and postgraduate admissions in the Department of AI and Data Science is now live on the college admission portal.",
+    content: "Online registration for undergraduate admissions in the Department of AI and Data Science (Batch 2026–2030) is now live on the college admission portal.",
     link: "/portal",
     isUrgent: true,
   },
@@ -62,7 +62,7 @@ export const ANNOUNCEMENTS: Announcement[] = [
     titleMl: "സെമസ്റ്റർ 4, 6 ഓട്ടോണമസ് പരീക്ഷാ ടൈംടേബിൾ പ്രസിദ്ധീകരിച്ചു",
     date: "August 20, 2026",
     category: "exam",
-    content: "Theory and practical examination schedules for academic year 2025-26 have been uploaded under the Downloads & Syllabus section.",
+    content: "Theory and practical examination schedules for academic year 2026 have been uploaded under the Downloads & Syllabus section.",
     link: "/academics/downloads",
     isUrgent: false,
   }
@@ -83,28 +83,12 @@ export const LECTURE_NOTES: NoteItem[] = [];
 export const SYLLABUS_LIST: SyllabusItem[] = [
   {
     id: "syl-1",
-    title: "B.Sc. Artificial Intelligence & Data Science Curriculum (Regulations 2024)",
+    title: "B.Sc. Artificial Intelligence & Data Science Curriculum (Regulations 2026–2030)",
     programme: "B.Sc. AI & Data Science",
-    academicYear: "2024 - 2027",
+    academicYear: "2026 - 2030",
     semester: 1,
-    fileUrl: "/downloads/syllabus/BSc_AIDS_Syllabus_2024_2027.pdf",
+    fileUrl: "/downloads/syllabus/BSc_AIDS_Syllabus_2026_2030.pdf",
     fileSize: "2.8 MB",
-  },
-  {
-    id: "syl-2",
-    title: "M.Sc Artificial Intelligence Post-Graduate Syllabus (Autonomous Framework)",
-    programme: "M.Sc AI",
-    academicYear: "2024 - 2026",
-    fileUrl: "/downloads/syllabus/MSc_AI_Syllabus_2024_2026.pdf",
-    fileSize: "3.1 MB",
-  },
-  {
-    id: "syl-3",
-    title: "B.Sc. Artificial Intelligence & Data Science (Regulations 2022 Archive)",
-    programme: "B.Sc. AI & Data Science",
-    academicYear: "2022 - 2025",
-    fileUrl: "/downloads/syllabus/BSc_AIDS_Syllabus_2022_2025.pdf",
-    fileSize: "2.4 MB",
   }
 ];
 
