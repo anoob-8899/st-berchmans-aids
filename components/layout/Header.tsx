@@ -454,168 +454,210 @@ export const Header: React.FC = () => {
 
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
-          <div className="lg:hidden bg-white border-b border-slate-200 px-4 pt-2 pb-6 max-h-[80vh] overflow-y-auto">
-            <div className="flex flex-col space-y-2 pt-2">
+          <div className="lg:hidden bg-white/98 backdrop-blur-md border-b border-slate-200 px-4 pt-3 pb-8 max-h-[85vh] overflow-y-auto shadow-2xl animate-in slide-in-from-top duration-200">
+            <div className="space-y-4">
+              
+              {/* Mobile Quick Search Bar */}
+              <button
+                type="button"
+                onClick={() => {
+                  closeMenus();
+                  setSearchModalOpen(true);
+                }}
+                className="w-full flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-slate-100 border border-slate-200 text-xs text-slate-600 font-medium hover:bg-slate-200/80 transition"
+              >
+                <Search className="w-4 h-4 text-[#FA7538]" />
+                <span className="flex-1 text-left">Search courses, notes, faculty...</span>
+                <span className="px-2 py-0.5 text-[10px] font-bold bg-white rounded-md border border-slate-300 text-slate-500">⌘K</span>
+              </button>
+
+              {/* Home Link */}
               <Link
                 href="/"
                 onClick={closeMenus}
-                className="px-3 py-2 font-medium text-slate-800 hover:bg-slate-50 rounded-lg"
+                className={`flex items-center justify-between px-4 py-2.5 font-bold text-sm rounded-xl transition ${
+                  pathname === '/'
+                    ? 'bg-[#FFF5F0] text-[#FA7538]'
+                    : 'text-slate-800 hover:bg-slate-50'
+                }`}
               >
-                {t('nav.home')}
+                <span>{t('nav.home')}</span>
+                <span className="text-xs text-slate-400">Main Portal</span>
               </Link>
               
-              <div className="border-t border-slate-100 pt-2 font-semibold text-xs text-slate-400 uppercase tracking-wider px-3">
-                {t('nav.about')}
+              {/* Section 1: About */}
+              <div className="bg-slate-50/70 p-3 rounded-2xl border border-slate-100 space-y-1">
+                <div className="font-bold text-[11px] text-[#12192B] uppercase tracking-wider px-2 pb-1 flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#FA7538]"></span>
+                  {t('nav.about')}
+                </div>
+                <div className="grid grid-cols-1 gap-1 text-xs">
+                  <Link
+                    href="/about/college-profile"
+                    onClick={closeMenus}
+                    className="px-3 py-2 text-slate-700 hover:text-[#FA7538] hover:bg-white rounded-lg transition font-medium"
+                  >
+                    {t('nav.collegeProfile')}
+                  </Link>
+                  <Link
+                    href="/about/department"
+                    onClick={closeMenus}
+                    className="px-3 py-2 text-slate-700 hover:text-[#FA7538] hover:bg-white rounded-lg transition font-medium"
+                  >
+                    {t('nav.department')}
+                  </Link>
+                  <Link
+                    href="/about/patron-saint"
+                    onClick={closeMenus}
+                    className="px-3 py-2 text-slate-700 hover:text-[#FA7538] hover:bg-white rounded-lg transition font-medium"
+                  >
+                    {t('nav.patronSaint')}
+                  </Link>
+                  <Link
+                    href="/about/mission-vision"
+                    onClick={closeMenus}
+                    className="px-3 py-2 text-slate-700 hover:text-[#FA7538] hover:bg-white rounded-lg transition font-medium"
+                  >
+                    {t('nav.missionVision')}
+                  </Link>
+                  <Link
+                    href="/about/skill-hub"
+                    onClick={closeMenus}
+                    className="px-3 py-2 text-slate-700 hover:text-[#FA7538] hover:bg-white rounded-lg transition font-medium"
+                  >
+                    {t('nav.skillHub')}
+                  </Link>
+                </div>
               </div>
-              <Link
-                href="/about/college-profile"
-                onClick={closeMenus}
-                className="pl-6 pr-3 py-1.5 text-sm text-slate-600 hover:text-[#FA7538]"
-              >
-                {t('nav.collegeProfile')}
-              </Link>
-              <Link
-                href="/about/department"
-                onClick={closeMenus}
-                className="pl-6 pr-3 py-1.5 text-sm text-slate-600 hover:text-[#FA7538]"
-              >
-                {t('nav.department')}
-              </Link>
-              <Link
-                href="/about/patron-saint"
-                onClick={closeMenus}
-                className="pl-6 pr-3 py-1.5 text-sm text-slate-600 hover:text-[#FA7538]"
-              >
-                {t('nav.patronSaint')}
-              </Link>
-              <Link
-                href="/about/mission-vision"
-                onClick={closeMenus}
-                className="pl-6 pr-3 py-1.5 text-sm text-slate-600 hover:text-[#FA7538]"
-              >
-                {t('nav.missionVision')}
-              </Link>
-              <Link
-                href="/about/skill-hub"
-                onClick={closeMenus}
-                className="pl-6 pr-3 py-1.5 text-sm text-slate-600 hover:text-[#FA7538]"
-              >
-                {t('nav.skillHub')}
-              </Link>
 
-              <div className="border-t border-slate-100 pt-2 font-semibold text-xs text-slate-400 uppercase tracking-wider px-3">
-                {t('nav.academics')}
+              {/* Section 2: Academics */}
+              <div className="bg-slate-50/70 p-3 rounded-2xl border border-slate-100 space-y-1">
+                <div className="font-bold text-[11px] text-[#2E7D50] uppercase tracking-wider px-2 pb-1 flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#2E7D50]"></span>
+                  {t('nav.academics')}
+                </div>
+                <div className="grid grid-cols-1 gap-1 text-xs">
+                  <Link
+                    href="/academics/programs"
+                    onClick={closeMenus}
+                    className="px-3 py-2 text-slate-700 hover:text-[#2E7D50] hover:bg-white rounded-lg transition font-medium"
+                  >
+                    {t('nav.programs')}
+                  </Link>
+                  <Link
+                    href="/academics/syllabus"
+                    onClick={closeMenus}
+                    className="px-3 py-2 text-slate-700 hover:text-[#2E7D50] hover:bg-white rounded-lg transition font-medium"
+                  >
+                    {t('nav.syllabus')}
+                  </Link>
+                  <Link
+                    href="/academics/notes"
+                    onClick={closeMenus}
+                    className="px-3 py-2 text-slate-700 hover:text-[#2E7D50] hover:bg-white rounded-lg transition font-semibold flex items-center justify-between"
+                  >
+                    <span>{t('nav.notes')}</span>
+                    <span className="text-[10px] bg-[#EEF8F2] text-[#2E7D50] px-2 py-0.5 rounded-full font-bold">PDF / Notes</span>
+                  </Link>
+                  <Link
+                    href="/academics/downloads"
+                    onClick={closeMenus}
+                    className="px-3 py-2 text-slate-700 hover:text-[#2E7D50] hover:bg-white rounded-lg transition font-medium"
+                  >
+                    {t('nav.downloads')}
+                  </Link>
+                </div>
               </div>
-              <Link
-                href="/academics/programs"
-                onClick={closeMenus}
-                className="pl-6 pr-3 py-1.5 text-sm text-slate-600 hover:text-[#FA7538]"
-              >
-                {t('nav.programs')}
-              </Link>
-              <Link
-                href="/academics/syllabus"
-                onClick={closeMenus}
-                className="pl-6 pr-3 py-1.5 text-sm text-slate-600 hover:text-[#FA7538]"
-              >
-                {t('nav.syllabus')}
-              </Link>
-              <Link
-                href="/academics/notes"
-                onClick={closeMenus}
-                className="pl-6 pr-3 py-1.5 text-sm text-slate-600 hover:text-[#FA7538]"
-              >
-                {t('nav.notes')}
-              </Link>
-              <Link
-                href="/academics/downloads"
-                onClick={closeMenus}
-                className="pl-6 pr-3 py-1.5 text-sm text-slate-600 hover:text-[#FA7538]"
-              >
-                {t('nav.downloads')}
-              </Link>
 
-              <div className="border-t border-slate-100 pt-2 font-semibold text-xs text-slate-400 uppercase tracking-wider px-3">
-                Community & Life
+              {/* Section 3: Community & Life */}
+              <div className="bg-slate-50/70 p-3 rounded-2xl border border-slate-100 space-y-1">
+                <div className="font-bold text-[11px] text-slate-500 uppercase tracking-wider px-2 pb-1 flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+                  Community &amp; Activities
+                </div>
+                <div className="grid grid-cols-2 gap-1 text-xs">
+                  <Link
+                    href="/people/faculty"
+                    onClick={closeMenus}
+                    className="px-3 py-2 text-slate-700 hover:text-[#FA7538] hover:bg-white rounded-lg transition font-medium"
+                  >
+                    {t('nav.faculty')}
+                  </Link>
+                  <Link
+                    href="/people/students"
+                    onClick={closeMenus}
+                    className="px-3 py-2 text-slate-700 hover:text-[#FA7538] hover:bg-white rounded-lg transition font-medium"
+                  >
+                    {t('nav.students')}
+                  </Link>
+                  <Link
+                    href="/activities"
+                    onClick={closeMenus}
+                    className="px-3 py-2 text-slate-700 hover:text-[#FA7538] hover:bg-white rounded-lg transition font-medium"
+                  >
+                    {t('nav.activities')}
+                  </Link>
+                  <Link
+                    href="/projects"
+                    onClick={closeMenus}
+                    className="px-3 py-2 text-slate-700 hover:text-[#FA7538] hover:bg-white rounded-lg transition font-medium"
+                  >
+                    {t('nav.projects')}
+                  </Link>
+                  <Link
+                    href="/events"
+                    onClick={closeMenus}
+                    className="px-3 py-2 text-slate-700 hover:text-[#FA7538] hover:bg-white rounded-lg transition font-medium"
+                  >
+                    {t('nav.events')}
+                  </Link>
+                  <Link
+                    href="/achievements"
+                    onClick={closeMenus}
+                    className="px-3 py-2 text-slate-700 hover:text-[#FA7538] hover:bg-white rounded-lg transition font-medium"
+                  >
+                    {t('nav.achievements')}
+                  </Link>
+                  <Link
+                    href="/gallery"
+                    onClick={closeMenus}
+                    className="col-span-2 px-3 py-2 text-[#FA7538] hover:bg-white rounded-lg transition font-bold text-center border border-[#FA7538]/20 bg-white"
+                  >
+                    Department Gallery
+                  </Link>
+                </div>
               </div>
-              <Link
-                href="/people/faculty"
-                onClick={closeMenus}
-                className="pl-6 pr-3 py-1.5 text-sm text-slate-600 hover:text-[#FA7538]"
-              >
-                {t('nav.faculty')}
-              </Link>
-              <Link
-                href="/people/students"
-                onClick={closeMenus}
-                className="pl-6 pr-3 py-1.5 text-sm text-slate-600 hover:text-[#FA7538]"
-              >
-                {t('nav.students')}
-              </Link>
-              <Link
-                href="/activities"
-                onClick={closeMenus}
-                className="px-3 py-2 font-medium text-slate-800 hover:bg-slate-50 rounded-lg"
-              >
-                {t('nav.activities')}
-              </Link>
-              <Link
-                href="/projects"
-                onClick={closeMenus}
-                className="px-3 py-2 font-medium text-slate-800 hover:bg-slate-50 rounded-lg"
-              >
-                {t('nav.projects')}
-              </Link>
-              <Link
-                href="/events"
-                onClick={closeMenus}
-                className="px-3 py-2 font-medium text-slate-800 hover:bg-slate-50 rounded-lg"
-              >
-                {t('nav.events')}
-              </Link>
-              <Link
-                href="/achievements"
-                onClick={closeMenus}
-                className="px-3 py-2 font-medium text-slate-800 hover:bg-slate-50 rounded-lg"
-              >
-                {t('nav.achievements')}
-              </Link>
-              <Link
-                href="/gallery"
-                onClick={closeMenus}
-                className="px-3 py-2 font-medium text-slate-800 hover:bg-slate-50 rounded-lg text-[#FA7538]"
-              >
-                Gallery
-              </Link>
 
-              <div className="pt-3 flex flex-col gap-2">
+              {/* Portal CTA Action Buttons */}
+              <div className="pt-2">
                 {isLoggedIn ? (
-                  <>
+                  <div className="flex flex-col gap-2">
                     <Link
                       href={isAdminLoggedIn || currentUserRole === 'admin' ? "/portal/admin" : currentUserRole === 'faculty' ? "/portal/faculty" : "/portal/student"}
                       onClick={closeMenus}
-                      className="w-full flex items-center justify-center py-2.5 px-4 rounded-full bg-[#12192B] text-white font-bold uppercase tracking-wider text-xs"
+                      className="w-full flex items-center justify-center py-3 px-4 rounded-2xl bg-[#12192B] text-white font-bold uppercase tracking-wider text-xs shadow-md hover:bg-slate-800 transition"
                     >
-                      My Dashboard
+                      Access Dashboard ({isAdminLoggedIn ? 'Admin' : currentUserRole})
                     </Link>
                     <button
                       type="button"
                       onClick={handleLogout}
-                      className="w-full flex items-center justify-center py-2.5 px-4 rounded-full bg-slate-100 text-slate-700 hover:bg-slate-200 font-bold uppercase tracking-wider text-xs"
+                      className="w-full flex items-center justify-center py-2.5 px-4 rounded-2xl bg-rose-50 text-rose-600 hover:bg-rose-100 font-bold uppercase tracking-wider text-xs transition"
                     >
                       Logout / Sign Out
                     </button>
-                  </>
+                  </div>
                 ) : (
                   <Link
                     href="/portal"
                     onClick={closeMenus}
-                    className="w-full flex items-center justify-center py-2.5 px-4 rounded-full bg-[#FA7538] text-white font-bold uppercase tracking-wider text-xs"
+                    className="w-full flex items-center justify-center py-3.5 px-4 rounded-2xl bg-[#FA7538] text-white font-bold uppercase tracking-wider text-xs shadow-lg hover:bg-[#E86326] transition"
                   >
-                    Login
+                    Login to Department Portal
                   </Link>
                 )}
               </div>
+
             </div>
           </div>
         )}

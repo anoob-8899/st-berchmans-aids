@@ -39,7 +39,9 @@ import {
   User,
   Bot,
   Brain,
-  Upload
+  Upload,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 
 interface PendingItem {
@@ -74,26 +76,6 @@ const DEFAULT_MANAGED_USERS: ManagedUser[] = [
     department: 'Artificial Intelligence & Data Science',
     status: 'active',
     lastLogin: 'Active Now',
-  },
-  {
-    id: 'fac-main',
-    name: 'Dr. Joseph Varghese',
-    email: 'aids@sbcollege.ac.in',
-    role: 'faculty',
-    identifier: 'Staff: FAC-AI-01',
-    department: 'Artificial Intelligence & Data Science',
-    status: 'active',
-    lastLogin: 'Yesterday',
-  },
-  {
-    id: 'stu-main',
-    name: 'Antony Vincent',
-    email: 'student@student.sbcollege.ac.in',
-    role: 'student',
-    identifier: 'Roll: 240101',
-    department: 'Artificial Intelligence & Data Science',
-    status: 'active',
-    lastLogin: 'Today',
   }
 ];
 
@@ -110,16 +92,27 @@ export default function AdminDashboardPage() {
           const saved = localStorage.getItem('sb_managed_logins');
           if (saved) {
             const parsed: ManagedUser[] = JSON.parse(saved);
-            // Requirement 4: Ensure adminaids is never suspended
-            const sanitized = parsed.map(u => {
+            // Requirement 2: Permanently remove demo accounts (Antony Vincent & Dr. Joseph Varghese)
+            const filtered = parsed.filter(u => 
+              u.id !== 'fac-main' && 
+              u.id !== 'stu-main' && 
+              !u.name.toLowerCase().includes('joseph varghese') && 
+              !u.name.toLowerCase().includes('antony vincent')
+            );
+
+            // Ensure adminaids is active
+            const sanitized = filtered.map(u => {
               if (u.id === 'admin-main' || (u.email && u.email.toLowerCase() === 'adminaids')) {
                 return { ...u, status: 'active' as const };
               }
               return u;
             });
+
             setUserLogins(sanitized);
+            localStorage.setItem('sb_managed_logins', JSON.stringify(sanitized));
           } else {
             localStorage.setItem('sb_managed_logins', JSON.stringify(DEFAULT_MANAGED_USERS));
+            setUserLogins(DEFAULT_MANAGED_USERS);
           }
         } catch (e) {}
       }
