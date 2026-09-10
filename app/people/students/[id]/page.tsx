@@ -22,7 +22,37 @@ export default function StudentDetailPage() {
   const params = useParams();
   const studentId = params?.id as string;
 
-  const student = INITIAL_STUDENTS.find(s => s.id === studentId) || INITIAL_STUDENTS[0];
+  const [student, setStudent] = React.useState<any>(() => {
+    return INITIAL_STUDENTS.find(s => s.id === studentId || s.rollNo === studentId) || INITIAL_STUDENTS[0];
+  });
+  const [allProjects, setAllProjects] = React.useState<any[]>(INITIAL_PROJECTS);
+
+  React.useEffect(() => {
+    async function loadData() {
+      if (!studentId) return;
+      try {
+        const [stuRes, projRes] = await Promise.all([
+          fetch(`/api/students?id=${encodeURIComponent(studentId)}`, { cache: 'no-store' }),
+          fetch('/api/projects', { cache: 'no-store' })
+        ]);
+        if (stuRes.ok) {
+          const stuData = await stuRes.json();
+          if (stuData.success && stuData.student) {
+            setStudent(stuData.student);
+          }
+        }
+        if (projRes.ok) {
+          const projData = await projRes.json();
+          if (projData.success && Array.isArray(projData.projects)) {
+            setAllProjects(projData.projects);
+          }
+        }
+      } catch (err) {
+        console.warn('Error loading dynamic student detail:', err);
+      }
+    }
+    loadData();
+  }, [studentId]);
 
   if (!student) {
     return (
@@ -40,8 +70,8 @@ export default function StudentDetailPage() {
   }
 
   // Projects where this student is a team member or submitter
-  const studentProjects = INITIAL_PROJECTS.filter(p => 
-    p.teamMembers.includes(student.name) || p.submittedBy === student.name
+  const studentProjects = allProjects.filter(p => 
+    p.teamMembers?.includes(student.name) || p.submittedBy === student.name
   );
 
   // Achievements where this student is tagged
@@ -136,7 +166,7 @@ export default function StudentDetailPage() {
                   Technical Competencies & Skills
                 </h4>
                 <div className="flex flex-wrap gap-2">
-                  {student.skills.map(sk => (
+                  {(student.skills || []).map((sk: string) => (
                     <span
                       key={sk}
                       className="px-3 py-1 rounded-full text-xs font-semibold bg-white text-slate-800 border border-slate-200 shadow-sm"
@@ -155,7 +185,7 @@ export default function StudentDetailPage() {
                 Affiliated College Wings
               </h3>
               <div className="space-y-2">
-                {student.wings.map(wing => (
+                {(student.wings || []).map((wing: string) => (
                   <Link
                     key={wing}
                     href={`/activities#${wing}`}

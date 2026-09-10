@@ -22,7 +22,34 @@ export default function ProjectDetailPage() {
   const params = useParams();
   const projectId = params?.id as string;
 
-  const project = INITIAL_PROJECTS.find(p => p.id === projectId) || INITIAL_PROJECTS[0];
+  const [project, setProject] = useState<Project | null>(() => {
+    return INITIAL_PROJECTS.find(p => p.id === projectId) || INITIAL_PROJECTS[0] || null;
+  });
+
+  const [comments, setComments] = useState<ProjectComment[]>(project?.comments || []);
+  const [userRating, setUserRating] = useState<number>(5);
+  const [userName, setUserName] = useState('');
+  const [userComment, setUserComment] = useState('');
+  const [submittedMessage, setSubmittedMessage] = useState(false);
+
+  React.useEffect(() => {
+    async function loadProject() {
+      if (!projectId) return;
+      try {
+        const res = await fetch(`/api/projects?id=${encodeURIComponent(projectId)}`, { cache: 'no-store' });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && data.project) {
+            setProject(data.project);
+            setComments(data.project.comments || []);
+          }
+        }
+      } catch (err) {
+        console.warn('Error loading dynamic project detail:', err);
+      }
+    }
+    loadProject();
+  }, [projectId]);
 
   if (!project) {
     return (
@@ -39,13 +66,7 @@ export default function ProjectDetailPage() {
     );
   }
 
-  const [comments, setComments] = useState<ProjectComment[]>(project.comments);
-  const [userRating, setUserRating] = useState<number>(5);
-  const [userName, setUserName] = useState('');
-  const [userComment, setUserComment] = useState('');
-  const [submittedMessage, setSubmittedMessage] = useState(false);
-
-  const handleAddComment = (e: React.FormEvent) => {
+  const handleAddComment = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!userName.trim() || !userComment.trim()) return;
 
@@ -61,6 +82,17 @@ export default function ProjectDetailPage() {
     };
 
     setComments(prev => [newC, ...prev]);
+
+    try {
+      await fetch('/api/projects', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ projectId: project.id, comment: newC }),
+      });
+    } catch (err) {
+      console.error('Failed to post project comment:', err);
+    }
+
     setSubmittedMessage(true);
     setUserName('');
     setUserComment('');

@@ -20,6 +20,8 @@ export interface ManagedUser {
   batch?: string;
   admissionYear?: string;
   bio?: string;
+  skills?: string[];
+  wings?: string[];
 }
 
 const DEFAULT_MANAGED_USERS: ManagedUser[] = [
@@ -33,6 +35,68 @@ const DEFAULT_MANAGED_USERS: ManagedUser[] = [
     department: 'Artificial Intelligence & Data Science',
     status: 'active',
     lastLogin: 'Active Now',
+    photo: '/images/sb college logo.jpg',
+    bio: 'Chief System Administrator for the Department of Artificial Intelligence & Data Science, St. Berchmans College.',
+  },
+  {
+    id: 'usr-rahul',
+    name: 'Rahul V. Nair',
+    username: 'rahul_nair',
+    email: 'rahul.nair@student.sbcollege.ac.in',
+    role: 'student',
+    identifier: 'Roll: 401',
+    department: 'Artificial Intelligence & Data Science',
+    status: 'active',
+    lastLogin: '2 hours ago',
+    photo: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop',
+    bio: 'AI & Data Science enthusiast passionate about Malayalam NLP and autonomous computer vision.',
+    skills: ['PyTorch', 'Computer Vision', 'Next.js', 'Python'],
+    wings: ['tech_team', 'nss'],
+  },
+  {
+    id: 'usr-ananya',
+    name: 'Ananya S. Kumar',
+    username: 'ananya_kumar',
+    email: 'ananya.kumar@student.sbcollege.ac.in',
+    role: 'student',
+    identifier: 'Roll: 402',
+    department: 'Artificial Intelligence & Data Science',
+    status: 'active',
+    lastLogin: 'Yesterday',
+    photo: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&h=400&fit=crop',
+    bio: 'Data Analyst focusing on financial predictive modeling and interactive dashboard visualisations.',
+    skills: ['Data Analytics', 'Power BI', 'Scikit-Learn', 'SQL'],
+    wings: ['media_team', 'sports'],
+  },
+  {
+    id: 'usr-kevin',
+    name: 'Kevin P. Thomas',
+    username: 'kevin_thomas',
+    email: 'kevin.thomas@student.sbcollege.ac.in',
+    role: 'student',
+    identifier: 'Roll: 403',
+    department: 'Artificial Intelligence & Data Science',
+    status: 'active',
+    lastLogin: '3 days ago',
+    photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop',
+    bio: 'Embedded Systems & AI Engineer building smart campus attendance hardware.',
+    skills: ['TensorFlow', 'IoT', 'Raspberry Pi', 'Embedded AI'],
+    wings: ['tech_team', 'ncc'],
+  },
+  {
+    id: 'usr-devika',
+    name: 'Devika R. Menon',
+    username: 'devika_menon',
+    email: 'devika.menon@student.sbcollege.ac.in',
+    role: 'student',
+    identifier: 'Roll: 404',
+    department: 'Artificial Intelligence & Data Science',
+    status: 'active',
+    lastLogin: '5 hours ago',
+    photo: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop',
+    bio: 'Conversational AI researcher crafting domain-specific RAG chatbots.',
+    skills: ['NLP', 'LLMs', 'RAG Pipelines', 'LangChain'],
+    wings: ['media_team', 'nss'],
   }
 ];
 

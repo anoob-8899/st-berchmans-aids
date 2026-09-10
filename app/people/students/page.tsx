@@ -17,18 +17,36 @@ import {
 } from 'lucide-react';
 
 export default function StudentsDirectoryPage() {
+  const [studentsList, setStudentsList] = useState<Student[]>(INITIAL_STUDENTS);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedWing, setSelectedWing] = useState('all');
 
+  React.useEffect(() => {
+    async function loadStudents() {
+      try {
+        const res = await fetch('/api/students', { cache: 'no-store' });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && Array.isArray(data.students) && data.students.length > 0) {
+            setStudentsList(data.students);
+          }
+        }
+      } catch (err) {
+        console.warn('Could not fetch students from API, using initial store:', err);
+      }
+    }
+    loadStudents();
+  }, []);
+
   const filteredStudents = useMemo(() => {
-    return INITIAL_STUDENTS.filter(s => {
+    return studentsList.filter(s => {
       const matchQuery = s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          s.rollNo.includes(searchQuery) ||
                          s.skills.some(sk => sk.toLowerCase().includes(searchQuery.toLowerCase()));
       const matchWing = selectedWing === 'all' || s.wings.includes(selectedWing as any);
       return matchQuery && matchWing;
     });
-  }, [searchQuery, selectedWing]);
+  }, [studentsList, searchQuery, selectedWing]);
 
   return (
     <div className="bg-white">

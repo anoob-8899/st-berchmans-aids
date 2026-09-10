@@ -68,11 +68,13 @@ export const ANNOUNCEMENTS: Announcement[] = [
   }
 ];
 
+import { DEFAULT_STUDENTS, DEFAULT_PROJECTS } from './defaultData';
+
 export const FACULTY_MEMBERS: Faculty[] = [];
 
-export const INITIAL_STUDENTS: Student[] = [];
+export const INITIAL_STUDENTS: Student[] = DEFAULT_STUDENTS;
 
-export const INITIAL_PROJECTS: Project[] = [];
+export const INITIAL_PROJECTS: Project[] = DEFAULT_PROJECTS;
 
 export const EVENTS: EventItem[] = [];
 

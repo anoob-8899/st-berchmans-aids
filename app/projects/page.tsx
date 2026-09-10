@@ -50,7 +50,24 @@ export default function ProjectsDirectoryPage() {
     });
   }, [projectsList, activeTab, searchQuery]);
 
-  const handleSubmitNewProject = (e: React.FormEvent) => {
+  React.useEffect(() => {
+    async function loadProjects() {
+      try {
+        const res = await fetch('/api/projects', { cache: 'no-store' });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && Array.isArray(data.projects) && data.projects.length > 0) {
+            setProjectsList(data.projects);
+          }
+        }
+      } catch (err) {
+        console.warn('Could not fetch projects from API:', err);
+      }
+    }
+    loadProjects();
+  }, []);
+
+  const handleSubmitNewProject = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.title.trim()) return;
 
@@ -62,18 +79,29 @@ export default function ProjectsDirectoryPage() {
       status: formData.status,
       teamMembers: formData.teamMembers.split(',').map(m => m.trim()).filter(Boolean),
       techStack: formData.techStack.split(',').map(t => t.trim()).filter(Boolean),
-      image: formData.image,
+      image: formData.image || 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&h=500&fit=crop',
       githubUrl: formData.githubUrl,
       demoUrl: formData.demoUrl,
       rating: 5.0,
       ratingCount: 1,
       comments: [],
-      submittedBy: formData.submittedBy,
+      submittedBy: formData.submittedBy || 'Student / Admin',
       submittedAt: 'Just now',
       isApproved: true,
     };
 
     setProjectsList(prev => [newProject, ...prev]);
+
+    try {
+      await fetch('/api/projects', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ project: newProject }),
+      });
+    } catch (err) {
+      console.error('Failed to save project to server database:', err);
+    }
+
     setSubmitSuccess(true);
     setTimeout(() => {
       setSubmitSuccess(false);

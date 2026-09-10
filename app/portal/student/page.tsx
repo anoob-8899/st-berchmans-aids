@@ -124,23 +124,35 @@ export default function StudentDashboardPage() {
           const userObj = JSON.parse(savedUser);
           userObj.name = name;
           userObj.photo = photo;
+          userObj.bio = bio;
+          userObj.skills = updatedStudent.skills;
+          userObj.wings = updatedStudent.wings;
           localStorage.setItem('sb_current_user', JSON.stringify(userObj));
           await saveUserAccount(userObj);
         }
+
+        // Save to persistent server database students.json
+        await fetch('/api/students', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ student: updatedStudent }),
+        });
 
         const savedLogins = localStorage.getItem('sb_managed_logins');
         if (savedLogins) {
           const logins: any[] = JSON.parse(savedLogins);
           const updatedLogins = logins.map(u => {
             if (u.id === student.id || u.name === student.name) {
-              return { ...u, name, photo };
+              return { ...u, name, photo, bio, skills: updatedStudent.skills, wings: updatedStudent.wings };
             }
             return u;
           });
           localStorage.setItem('sb_managed_logins', JSON.stringify(updatedLogins));
           window.dispatchEvent(new Event('storage'));
         }
-      } catch (err) {}
+      } catch (err) {
+        console.error('Error saving student profile:', err);
+      }
     }
 
     setSubmissionStatus('approved');
