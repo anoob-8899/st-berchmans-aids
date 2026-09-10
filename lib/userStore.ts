@@ -37,21 +37,6 @@ const DEFAULT_MANAGED_USERS: ManagedUser[] = [
     lastLogin: 'Active Now',
     photo: '/images/sb college logo.jpg',
     bio: 'Chief System Administrator for the Department of Artificial Intelligence & Data Science, St. Berchmans College.',
-  },
-  {
-    id: 'stu-vincent',
-    name: 'Vincent Antony',
-    username: 'vincent_antony',
-    email: 'vincent.antony@student.sbcollege.ac.in',
-    role: 'student',
-    identifier: 'Roll: 401',
-    department: 'Artificial Intelligence & Data Science',
-    status: 'active',
-    lastLogin: 'Active Now',
-    photo: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop',
-    bio: 'Department of AI & Data Science Innovator specializing in Malayalam Computer Vision, Full-Stack AI Development, and holistic campus leadership.',
-    skills: ['PyTorch', 'Computer Vision', 'Next.js', 'Python', 'OpenCV', 'Data Science', 'Machine Learning', 'NLP'],
-    wings: ['tech_team', 'media_team', 'nss', 'ncc', 'sports'],
   }
 ];
 

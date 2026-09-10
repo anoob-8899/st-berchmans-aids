@@ -6,7 +6,7 @@
     "category": "Computer Vision",
     "status": "completed",
     "teamMembers": [
-      "Vincent Antony"
+      "AI & DS Department Team"
     ],
     "techStack": [
       "PyTorch",
@@ -33,7 +33,7 @@
         "approved": true
       }
     ],
-    "submittedBy": "Vincent Antony",
+    "submittedBy": "Department Tech Team",
     "submittedAt": "August 10, 2026",
     "isApproved": true
   },
@@ -44,7 +44,7 @@
     "category": "IoT & Edge AI",
     "status": "completed",
     "teamMembers": [
-      "Vincent Antony"
+      "AI & DS Department Team"
     ],
     "techStack": [
       "TensorFlow Lite",
@@ -70,7 +70,7 @@
         "approved": true
       }
     ],
-    "submittedBy": "Vincent Antony",
+    "submittedBy": "Department Tech Team",
     "submittedAt": "August 20, 2026",
     "isApproved": true
   }
