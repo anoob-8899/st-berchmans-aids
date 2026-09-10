@@ -32,6 +32,21 @@ export default function PortalLoginPage() {
         localStorage.setItem('sb_current_role', 'admin');
         localStorage.setItem('sb_current_username', 'adminaids');
         localStorage.setItem('sb_logged_in', 'true');
+        
+        // Ensure adminaids is always unsuspended in sb_managed_logins if present
+        try {
+          const saved = localStorage.getItem('sb_managed_logins');
+          if (saved) {
+            const users = JSON.parse(saved);
+            const updated = users.map((u: any) => {
+              if (u.id === 'admin-main' || (u.username && u.username.toLowerCase() === 'adminaids')) {
+                return { ...u, status: 'active' };
+              }
+              return u;
+            });
+            localStorage.setItem('sb_managed_logins', JSON.stringify(updated));
+          }
+        } catch (err) {}
       }
       setTimeout(() => {
         router.push('/portal/admin');
@@ -86,6 +101,17 @@ export default function PortalLoginPage() {
             setError('Access Denied: Your account has been suspended by the Administrator.');
             setIsLoading(false);
             return;
+          }
+
+          // If user had one-time permission granted by admin, consume it now
+          if (matchedUser.oneTimePermission) {
+            const updatedUsers = managedUsers.map((u: any) => {
+              if (u.id === matchedUser.id) {
+                return { ...u, oneTimePermission: false, status: 'pending', lastLogin: `1-Time Permission Used (${new Date().toLocaleTimeString()})` };
+              }
+              return u;
+            });
+            localStorage.setItem('sb_managed_logins', JSON.stringify(updatedUsers));
           }
 
           // Active user authenticated
@@ -199,10 +225,15 @@ export default function PortalLoginPage() {
                 onChange={(e) => setUsername(e.target.value)}
                 autoComplete="username"
                 required
-                placeholder={role === 'admin' ? 'adminaids' : 'Username or email address'}
+                placeholder={role === 'admin' ? 'adminaids' : 'firstname_secondname'}
                 className="w-full rounded-xl border border-slate-300 py-2.5 pl-10 pr-4 text-sm outline-none focus:ring-2 focus:ring-[#FA7538]"
               />
             </div>
+            {role !== 'admin' && (
+              <p className="text-[11px] text-slate-500 mt-1 font-mono">
+                Format: firstname_secondname or roll number (e.g. 400)
+              </p>
+            )}
           </div>
 
           <div>

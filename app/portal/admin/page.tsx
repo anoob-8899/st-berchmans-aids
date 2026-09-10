@@ -61,6 +61,7 @@ export interface ManagedUser {
   status: 'active' | 'suspended' | 'pending';
   lastLogin: string;
   tempPassword?: string;
+  oneTimePermission?: boolean;
 }
 
 const DEFAULT_MANAGED_USERS: ManagedUser[] = [
@@ -108,7 +109,15 @@ export default function AdminDashboardPage() {
         try {
           const saved = localStorage.getItem('sb_managed_logins');
           if (saved) {
-            setUserLogins(JSON.parse(saved));
+            const parsed: ManagedUser[] = JSON.parse(saved);
+            // Requirement 4: Ensure adminaids is never suspended
+            const sanitized = parsed.map(u => {
+              if (u.id === 'admin-main' || (u.email && u.email.toLowerCase() === 'adminaids')) {
+                return { ...u, status: 'active' as const };
+              }
+              return u;
+            });
+            setUserLogins(sanitized);
           } else {
             localStorage.setItem('sb_managed_logins', JSON.stringify(DEFAULT_MANAGED_USERS));
           }
@@ -267,12 +276,19 @@ export default function AdminDashboardPage() {
       } catch (e) {}
     }
 
+    const targetUser = currentLogins.find(u => u.id === userId);
+    if (userId === 'admin-main' || targetUser?.email === 'adminaids' || (targetUser?.name && targetUser.name.toLowerCase().includes('chief administrator'))) {
+      notify('Chief Administrator (adminaids) is permanently active and cannot be suspended.');
+      return;
+    }
+
     const updated = currentLogins.map(u => {
       if (u.id === userId) {
         const newStatus = u.status === 'active' ? 'suspended' : 'active';
         return { 
           ...u, 
           status: newStatus as 'active' | 'suspended',
+          oneTimePermission: false,
           approvalStatus: newStatus === 'active' ? 'approved' : 'rejected',
           lastLogin: newStatus === 'active' ? 'Approved by Admin' : u.lastLogin
         };
@@ -282,6 +298,32 @@ export default function AdminDashboardPage() {
     saveUserLogins(updated);
     const target = updated.find(u => u.id === userId);
     notify(`Account status updated: ${target?.name} is now ${target?.status.toUpperCase()}`);
+  };
+
+  // Requirement 1: Grant 1-Time Login Permission from Admin
+  const handleGrantOneTimePermission = (userId: string) => {
+    let currentLogins = userLogins;
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('sb_managed_logins');
+        if (saved) currentLogins = JSON.parse(saved);
+      } catch (e) {}
+    }
+
+    const updated = currentLogins.map(u => {
+      if (u.id === userId) {
+        return { 
+          ...u, 
+          status: 'active' as const,
+          oneTimePermission: true,
+          lastLogin: '1-Time Permission Granted by Admin'
+        };
+      }
+      return u;
+    });
+    saveUserLogins(updated);
+    const target = updated.find(u => u.id === userId);
+    notify(`1-Time Login Permission granted for ${target?.name}`);
   };
 
   // Reset password
@@ -300,6 +342,10 @@ export default function AdminDashboardPage() {
 
   // Delete user login
   const handleDeleteUser = (userId: string, name: string) => {
+    if (userId === 'admin-main' || name.toLowerCase().includes('adminaids') || name.toLowerCase().includes('chief administrator')) {
+      notify('Chief Administrator (adminaids) cannot be deleted.');
+      return;
+    }
     if (confirm(`Are you sure you want to revoke login access and remove ${name}?`)) {
       const updated = userLogins.filter(u => u.id !== userId);
       saveUserLogins(updated);
@@ -798,6 +844,11 @@ export default function AdminDashboardPage() {
                               {user.status === 'pending' ? 'Pending Approval' : user.status}
                             </span>
                           </div>
+                          {user.oneTimePermission && (
+                            <div className="mt-1 text-[10px] bg-blue-50 text-blue-800 border border-blue-200 px-2 py-0.5 rounded font-bold inline-block">
+                              1-Time Permission Granted
+                            </div>
+                          )}
                           {user.tempPassword && (
                             <div className="mt-1 text-[10px] bg-amber-50 text-amber-800 border border-amber-200 px-2 py-0.5 rounded font-mono">
                               Temp Key: {user.tempPassword}
@@ -811,6 +862,18 @@ export default function AdminDashboardPage() {
 
                         <td className="py-3.5 px-3 text-right">
                           <div className="flex items-center justify-end gap-1.5">
+                            {/* Grant 1-Time Permission Button */}
+                            {user.role !== 'admin' && (
+                              <button
+                                type="button"
+                                onClick={() => handleGrantOneTimePermission(user.id)}
+                                className="px-2.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-[11px] uppercase tracking-wider transition"
+                                title="Grant single one-time login permission from admin"
+                              >
+                                1-Time Login
+                              </button>
+                            )}
+
                             {/* Suspend / Enable Toggle */}
                             <button
                               type="button"
