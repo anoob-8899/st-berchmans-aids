@@ -31,7 +31,7 @@ export const AdminEditProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   useEffect(() => {
     try {
-      const role = localStorage.getItem('sb_user_role');
+      const role = localStorage.getItem('sb_user_role') || localStorage.getItem('sb_current_role');
       if (role === 'admin') {
         setIsAdminLoggedInState(true);
         const savedAdminMode = localStorage.getItem('sb_admin_mode');
@@ -57,8 +57,13 @@ export const AdminEditProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     try {
       if (val) {
         localStorage.setItem('sb_user_role', 'admin');
+        localStorage.setItem('sb_current_role', 'admin');
+        localStorage.setItem('sb_logged_in', 'true');
       } else {
         localStorage.removeItem('sb_user_role');
+        localStorage.removeItem('sb_current_role');
+        localStorage.removeItem('sb_current_user');
+        localStorage.removeItem('sb_logged_in');
         localStorage.removeItem('sb_admin_mode');
         setIsAdminModeState(false);
       }

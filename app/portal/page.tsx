@@ -28,8 +28,10 @@ export default function PortalLoginPage() {
     if (cleanUsername === 'adminaids' && cleanPassword === '9m8m7m6m5m') {
       setIsAdminLoggedIn(true);
       if (typeof window !== 'undefined') {
+        localStorage.setItem('sb_user_role', 'admin');
         localStorage.setItem('sb_current_role', 'admin');
         localStorage.setItem('sb_current_username', 'adminaids');
+        localStorage.setItem('sb_logged_in', 'true');
       }
       setTimeout(() => {
         router.push('/portal/admin');
@@ -61,8 +63,10 @@ export default function PortalLoginPage() {
           }
 
           // Active user authenticated
+          localStorage.setItem('sb_user_role', matchedUser.role);
           localStorage.setItem('sb_current_role', matchedUser.role);
           localStorage.setItem('sb_current_user', JSON.stringify(matchedUser));
+          localStorage.setItem('sb_logged_in', 'true');
 
           if (matchedUser.role === 'admin') {
             setIsAdminLoggedIn(true);

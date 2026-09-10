@@ -45,7 +45,12 @@ export const Header: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  const [currentUserRole, setCurrentUserRole] = useState<string | null>(null);
+  const [currentUserRole, setCurrentUserRole] = useState<string | null>(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('sb_current_role') || localStorage.getItem('sb_user_role');
+    }
+    return null;
+  });
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -63,6 +68,7 @@ export const Header: React.FC = () => {
       localStorage.removeItem('sb_user_role');
       localStorage.removeItem('sb_current_user');
       localStorage.removeItem('sb_current_username');
+      localStorage.removeItem('sb_logged_in');
       localStorage.removeItem('sb_admin_mode');
     }
     setCurrentUserRole(null);
@@ -411,12 +417,21 @@ export const Header: React.FC = () => {
             </button>
 
             {isLoggedIn ? (
-              <Link
-                href={isAdminLoggedIn || currentUserRole === 'admin' ? "/portal/admin" : currentUserRole === 'faculty' ? "/portal/faculty" : "/portal/student"}
-                className="hidden sm:inline-flex items-center justify-center px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-full bg-[#12192B] text-white hover:bg-[#FA7538] shadow-sm transition-all"
-              >
-                Dashboard
-              </Link>
+              <div className="hidden sm:flex items-center gap-2">
+                <Link
+                  href={isAdminLoggedIn || currentUserRole === 'admin' ? "/portal/admin" : currentUserRole === 'faculty' ? "/portal/faculty" : "/portal/student"}
+                  className="px-3.5 py-2 rounded-full text-xs font-bold uppercase tracking-wider bg-[#12192B] text-white hover:bg-slate-800 transition"
+                >
+                  Dashboard
+                </Link>
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-full bg-[#FA7538] text-white hover:bg-[#E86326] shadow-sm hover:shadow transition-all cursor-pointer"
+                >
+                  Logout
+                </button>
+              </div>
             ) : (
               <Link
                 href="/portal"
