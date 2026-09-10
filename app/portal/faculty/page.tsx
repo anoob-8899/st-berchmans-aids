@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 
 export default function FacultyDashboardPage() {
-  const faculty = FACULTY_MEMBERS[0] || {
+  const defaultFaculty = FACULTY_MEMBERS[0] || {
     id: 'fac-default',
     name: 'Faculty Member',
     designation: 'Assistant Professor',
@@ -26,7 +26,31 @@ export default function FacultyDashboardPage() {
     email: 'aids@sbcollege.ac.in',
     photo: '/images/sb college logo.jpg',
     researchInterests: ['Machine Learning', 'Data Mining'],
-  }; // Dr. Joseph Varghese (HOD)
+  };
+  const [faculty, setFaculty] = React.useState(defaultFaculty);
+
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('sb_current_user');
+        if (saved) {
+          const user = JSON.parse(saved);
+          setFaculty({
+            id: user.id || defaultFaculty.id,
+            name: user.name || defaultFaculty.name,
+            designation: user.identifier || 'Assistant Professor',
+            qualification: 'M.Tech / Ph.D in Data Science',
+            specialization: 'Artificial Intelligence & Data Science',
+            experience: 'Faculty Staff',
+            email: user.email || defaultFaculty.email,
+            photo: user.photo || '/images/sb college logo.jpg',
+            researchInterests: ['Artificial Intelligence', 'Machine Learning', 'Data Science'],
+            order: 1,
+          });
+        }
+      } catch (e) {}
+    }
+  }, []);
 
   return (
     <div className="bg-[#F7F8F9] min-h-screen py-10">

@@ -20,15 +20,17 @@ export default function SignUpPage() {
     e.preventDefault();
     if (!fullName.trim() || !username.trim()) return;
 
+    const cleanUserStr = username.trim().toLowerCase();
     const newAccount = {
       id: `usr-${Date.now()}`,
       name: fullName.trim(),
-      email: email.trim() || `${username.trim().toLowerCase()}@sbcollege.ac.in`,
-      username: username.trim().toLowerCase(),
+      username: cleanUserStr,
+      email: email.trim().toLowerCase() || `${cleanUserStr}@sbcollege.ac.in`,
       role,
-      identifier: identifier.trim() || (role === 'student' ? 'Roll: Pending' : 'Staff: Pending'),
+      identifier: identifier.trim() || (role === 'student' ? 'Roll: ' + Math.floor(240100 + Math.random() * 99) : 'Staff: FAC-AI-' + Math.floor(10 + Math.random() * 89)),
       department: 'Artificial Intelligence & Data Science',
       status: 'pending', // Pending Admin Approval
+      approvalStatus: 'pending',
       lastLogin: 'Pending Approval',
       password: password.trim() || 'SBCollege@2026'
     };
@@ -37,7 +39,9 @@ export default function SignUpPage() {
       try {
         const saved = localStorage.getItem('sb_managed_logins');
         const existingUsers = saved ? JSON.parse(saved) : [];
-        localStorage.setItem('sb_managed_logins', JSON.stringify([newAccount, ...existingUsers]));
+        const updated = [newAccount, ...existingUsers.filter((u: any) => u.username !== cleanUserStr && u.id !== newAccount.id)];
+        localStorage.setItem('sb_managed_logins', JSON.stringify(updated));
+        window.dispatchEvent(new Event('storage'));
       } catch (e) {}
     }
 

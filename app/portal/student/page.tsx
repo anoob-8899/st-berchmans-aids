@@ -38,6 +38,32 @@ export default function StudentDashboardPage() {
   const [isEditing, setIsEditing] = useState(false);
   const [submissionStatus, setSubmissionStatus] = useState<'idle' | 'pending' | 'approved'>('approved');
 
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('sb_current_user');
+        if (saved) {
+          const user = JSON.parse(saved);
+          const activeStudent: Student = {
+            id: user.id || defaultStudent.id,
+            name: user.name || defaultStudent.name,
+            rollNo: user.identifier || defaultStudent.rollNo,
+            batch: 'B.Sc. AI & DS (2024 - 2027)',
+            bloodGroup: 'O+ve',
+            email: user.email || defaultStudent.email,
+            photo: user.photo || '/images/sb college logo.jpg',
+            skills: ['Python', 'Data Science', 'AI Foundations'],
+            wings: ['tech_team'],
+            bio: 'Active student registered in the Department of AI & Data Science.',
+            approvalStatus: 'approved',
+          };
+          setStudent(activeStudent);
+          setName(activeStudent.name);
+        }
+      } catch (e) {}
+    }
+  }, []);
+
   // Edit form fields
   const [name, setName] = useState(student.name);
   const [bloodGroup, setBloodGroup] = useState(student.bloodGroup);

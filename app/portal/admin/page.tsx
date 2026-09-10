@@ -57,7 +57,7 @@ export interface ManagedUser {
   role: 'student' | 'faculty' | 'admin';
   identifier: string;
   department: string;
-  status: 'active' | 'suspended';
+  status: 'active' | 'suspended' | 'pending';
   lastLogin: string;
   tempPassword?: string;
 }
@@ -72,6 +72,26 @@ const DEFAULT_MANAGED_USERS: ManagedUser[] = [
     department: 'Artificial Intelligence & Data Science',
     status: 'active',
     lastLogin: 'Active Now',
+  },
+  {
+    id: 'fac-main',
+    name: 'Dr. Joseph Varghese',
+    email: 'aids@sbcollege.ac.in',
+    role: 'faculty',
+    identifier: 'Staff: FAC-AI-01',
+    department: 'Artificial Intelligence & Data Science',
+    status: 'active',
+    lastLogin: 'Yesterday',
+  },
+  {
+    id: 'stu-main',
+    name: 'Antony Vincent',
+    email: 'student@student.sbcollege.ac.in',
+    role: 'student',
+    identifier: 'Roll: 240101',
+    department: 'Artificial Intelligence & Data Science',
+    status: 'active',
+    lastLogin: 'Today',
   }
 ];
 
@@ -81,6 +101,27 @@ export default function AdminDashboardPage() {
 
   useEffect(() => {
     setIsAdminLoggedIn(true);
+
+    function syncLogins() {
+      if (typeof window !== 'undefined') {
+        try {
+          const saved = localStorage.getItem('sb_managed_logins');
+          if (saved) {
+            setUserLogins(JSON.parse(saved));
+          } else {
+            localStorage.setItem('sb_managed_logins', JSON.stringify(DEFAULT_MANAGED_USERS));
+          }
+        } catch (e) {}
+      }
+    }
+
+    syncLogins();
+    window.addEventListener('storage', syncLogins);
+    window.addEventListener('focus', syncLogins);
+    return () => {
+      window.removeEventListener('storage', syncLogins);
+      window.removeEventListener('focus', syncLogins);
+    };
   }, []);
 
   const [pendingQueue, setPendingQueue] = useState<PendingItem[]>([]);
@@ -184,9 +225,12 @@ export default function AdminDashboardPage() {
 
   const saveUserLogins = (updatedUsers: ManagedUser[]) => {
     setUserLogins(updatedUsers);
-    try {
-      localStorage.setItem('sb_managed_logins', JSON.stringify(updatedUsers));
-    } catch (e) {}
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('sb_managed_logins', JSON.stringify(updatedUsers));
+        window.dispatchEvent(new Event('storage'));
+      } catch (e) {}
+    }
   };
 
   const notify = (msg: string) => {
@@ -194,12 +238,25 @@ export default function AdminDashboardPage() {
     setTimeout(() => setNotification(null), 3000);
   };
 
-  // Toggle user active / suspended status
+  // Toggle user active / suspended status (Approve / Activate / Suspend)
   const handleToggleStatus = (userId: string) => {
-    const updated = userLogins.map(u => {
+    let currentLogins = userLogins;
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('sb_managed_logins');
+        if (saved) currentLogins = JSON.parse(saved);
+      } catch (e) {}
+    }
+
+    const updated = currentLogins.map(u => {
       if (u.id === userId) {
         const newStatus = u.status === 'active' ? 'suspended' : 'active';
-        return { ...u, status: newStatus as 'active' | 'suspended' };
+        return { 
+          ...u, 
+          status: newStatus as 'active' | 'suspended',
+          approvalStatus: newStatus === 'active' ? 'approved' : 'rejected',
+          lastLogin: newStatus === 'active' ? 'Approved by Admin' : u.lastLogin
+        };
       }
       return u;
     });
@@ -239,19 +296,30 @@ export default function AdminDashboardPage() {
       return;
     }
 
-    const newUser: ManagedUser = {
+    const cleanUserStr = newUserEmail.trim().split('@')[0].toLowerCase();
+    const newUser: ManagedUser & { username?: string; password?: string } = {
       id: `usr-${Date.now()}`,
       name: newUserName.trim(),
+      username: cleanUserStr,
       email: newUserEmail.trim().toLowerCase(),
       role: newUserRole,
       identifier: newUserIdentifier.trim() || (newUserRole === 'student' ? 'Roll: ' + Math.floor(240000 + Math.random() * 999) : 'Staff ID: ' + Math.floor(100 + Math.random() * 900)),
       department: 'Artificial Intelligence & Data Science',
       status: 'active',
-      lastLogin: 'Never logged in',
-      tempPassword: newUserPassword.trim()
+      lastLogin: 'Created by Admin',
+      tempPassword: newUserPassword.trim(),
+      password: newUserPassword.trim()
     };
 
-    const updated = [newUser, ...userLogins];
+    let currentLogins = userLogins;
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('sb_managed_logins');
+        if (saved) currentLogins = JSON.parse(saved);
+      } catch (e) {}
+    }
+
+    const updated = [newUser, ...currentLogins];
     saveUserLogins(updated);
     setShowAddUserModal(false);
     setNewUserName('');
@@ -685,12 +753,14 @@ export default function AdminDashboardPage() {
                         <td className="py-3.5 px-3">
                           <div className="flex items-center gap-1.5">
                             <span className={`w-2 h-2 rounded-full ${
-                              user.status === 'active' ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500'
+                              user.status === 'active' ? 'bg-emerald-500 animate-pulse' :
+                              user.status === 'pending' ? 'bg-amber-500 animate-ping' : 'bg-rose-500'
                             }`} />
                             <span className={`font-semibold capitalize text-[11px] ${
-                              user.status === 'active' ? 'text-emerald-700' : 'text-rose-600'
+                              user.status === 'active' ? 'text-emerald-700' :
+                              user.status === 'pending' ? 'text-amber-800 font-bold' : 'text-rose-600'
                             }`}>
-                              {user.status}
+                              {user.status === 'pending' ? 'Pending Approval' : user.status}
                             </span>
                           </div>
                           {user.tempPassword && (
@@ -721,6 +791,11 @@ export default function AdminDashboardPage() {
                                 <>
                                   <UserX className="w-3.5 h-3.5" />
                                   <span className="hidden sm:inline">Suspend</span>
+                                </>
+                              ) : user.status === 'pending' ? (
+                                <>
+                                  <UserCheck className="w-3.5 h-3.5 text-emerald-300" />
+                                  <span className="hidden sm:inline">Approve & Activate</span>
                                 </>
                               ) : (
                                 <>
