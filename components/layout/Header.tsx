@@ -222,13 +222,10 @@ export const Header: React.FC = () => {
                   </Link>
                   <Link
                     href="/about/skill-hub"
-                    className="block px-3 py-2 text-sm text-slate-700 hover:bg-[#F7F8F9] hover:text-[#FA7538] rounded-xl border-t border-slate-100 mt-1 pt-2"
+                    className="block px-3 py-2 text-sm text-slate-700 hover:bg-[#F7F8F9] hover:text-[#FA7538] rounded-xl"
                   >
-                    <div className="font-medium text-[#FA7538] flex items-center gap-1.5">
-                      <Sparkles className="w-3.5 h-3.5" />
-                      {t('nav.skillHub')}
-                    </div>
-                    <div className="text-xs text-slate-400">26 industry certification courses</div>
+                    <div className="font-medium">{t('nav.skillHub')}</div>
+                    <div className="text-xs text-slate-400">Industry certification courses</div>
                   </Link>
                 </div>
               </div>
@@ -452,9 +449,9 @@ export const Header: React.FC = () => {
               <Link
                 href="/about/skill-hub"
                 onClick={closeMenus}
-                className="pl-6 pr-3 py-1.5 text-sm text-[#FA7538] font-medium"
+                className="pl-6 pr-3 py-1.5 text-sm text-slate-600 hover:text-[#FA7538]"
               >
-                ★ {t('nav.skillHub')} (26 Courses)
+                {t('nav.skillHub')}
               </Link>
 
               <div className="border-t border-slate-100 pt-2 font-semibold text-xs text-slate-400 uppercase tracking-wider px-3">

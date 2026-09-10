@@ -44,8 +44,8 @@ export const MARIO_KNOWLEDGE_BASE: KnowledgeAnswer[] = [
   },
   {
     keywords: ["faculty", "teachers", "hod", "professors", "joseph varghese", "staff"],
-    answerEn: "Our Department is led by Dr. Joseph Varghese (HOD & Associate Professor, Ph.D. from IIT Madras), alongside Prof. Priya Mathew, Dr. Arun Kumar R., and Prof. Anju Thomas. You can explore their research interests, publications, and contact emails on the Faculty page.",
-    answerMl: "ഡോ. ജോസഫ് വർഗ്ഗീസ് (HOD, Ph.D. IIT Madras) ആണ് ഡിപ്പാർട്ട്മെന്റിനെ നയിക്കുന്നത്. പ്രൊഫ. പ്രിയ മാത്യു, ഡോ. അരുൺ കുമാർ ആർ, പ്രൊഫ. അഞ്ജു തോമസ് എന്നിവരടങ്ങുന്ന പരിചയസമ്പന്നരായ അധ്യാപക നിരയാണ് വകുപ്പിലുള്ളത്.",
+    answerEn: "Our Department faculty team consists of qualified researchers and educators specializing in AI, Machine Learning, Computer Vision, and Data Science. You can explore their research profiles and contact information on the Faculty page.",
+    answerMl: "യോഗ്യതയുള്ള അധ്യാപകരും ഗവേഷകരുമാണ് ആർട്ടിഫിഷ്യൽ ഇന്റലിജൻസ് & ഡാറ്റ സയൻസ് ഡിപ്പാർട്ട്മെന്റിനെ നയിക്കുന്നത്. കൂടുതൽ വിവരങ്ങൾ Faculty പേജിൽ ലഭ്യമാണ്.",
     relatedLink: "/people/faculty"
   },
   {

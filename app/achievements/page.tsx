@@ -28,6 +28,11 @@ export default function AchievementsPage() {
       {/* Main Content */}
       <section className="py-16 sm:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-10">
+          {ACHIEVEMENTS.length === 0 && (
+            <div className="py-16 text-center text-xs text-slate-400 bg-[#F7F8F9] rounded-3xl border border-dashed border-slate-200">
+              No achievements or awards posted yet.
+            </div>
+          )}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {ACHIEVEMENTS.map(ach => (
               <div

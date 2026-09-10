@@ -61,105 +61,15 @@ export interface ManagedUser {
 
 const DEFAULT_MANAGED_USERS: ManagedUser[] = [
   {
-    id: 'usr-1',
-    name: 'Kevin Paul',
-    email: 'kevin.paul@student.sbcollege.ac.in',
-    role: 'student',
-    identifier: 'Roll: 220101',
-    department: 'Artificial Intelligence & Data Science',
-    status: 'active',
-    lastLogin: 'Today, 09:40 AM',
-  },
-  {
-    id: 'usr-2',
-    name: 'Ananya Roy',
-    email: 'ananya.r@student.sbcollege.ac.in',
-    role: 'student',
-    identifier: 'Roll: 220102',
-    department: 'Artificial Intelligence & Data Science',
-    status: 'active',
-    lastLogin: 'Today, 11:15 AM',
-  },
-  {
-    id: 'usr-3',
-    name: 'Alan George',
-    email: 'alan.g@student.sbcollege.ac.in',
-    role: 'student',
-    identifier: 'Roll: 220103',
-    department: 'Artificial Intelligence & Data Science',
-    status: 'active',
-    lastLogin: 'Yesterday, 03:20 PM',
-  },
-  {
-    id: 'usr-4',
-    name: 'Riya Mathew',
-    email: 'riya.m@student.sbcollege.ac.in',
-    role: 'student',
-    identifier: 'Roll: 240101',
-    department: 'Artificial Intelligence & Data Science',
-    status: 'active',
-    lastLogin: 'Yesterday, 06:10 PM',
-  },
-  {
-    id: 'usr-5',
-    name: 'Sneha Kurian',
-    email: 'sneha.k@student.sbcollege.ac.in',
-    role: 'student',
-    identifier: 'Roll: 240102',
-    department: 'Artificial Intelligence & Data Science',
-    status: 'suspended',
-    lastLogin: '3 days ago',
-  },
-  {
-    id: 'usr-6',
-    name: 'Dr. Joseph Varghese',
-    email: 'joseph.varghese@sbcollege.ac.in',
-    role: 'faculty',
-    identifier: 'Staff: FAC-AI-01',
-    department: 'Artificial Intelligence & Data Science',
-    status: 'active',
-    lastLogin: 'Today, 08:30 AM',
-  },
-  {
-    id: 'usr-7',
-    name: 'Dr. Mary Cherian',
-    email: 'mary.cherian@sbcollege.ac.in',
-    role: 'faculty',
-    identifier: 'Staff: FAC-AI-02',
-    department: 'Artificial Intelligence & Data Science',
-    status: 'active',
-    lastLogin: 'Today, 10:05 AM',
-  },
-  {
-    id: 'usr-8',
-    name: 'Prof. Thomas George',
-    email: 'thomas.g@sbcollege.ac.in',
-    role: 'faculty',
-    identifier: 'Staff: FAC-AI-03',
-    department: 'Artificial Intelligence & Data Science',
-    status: 'active',
-    lastLogin: '2 days ago',
-  },
-  {
-    id: 'usr-9',
-    name: 'Department HOD',
-    email: 'hod.aids@sbcollege.ac.in',
-    role: 'faculty',
-    identifier: 'Staff: HOD-AI-00',
-    department: 'Artificial Intelligence & Data Science',
-    status: 'active',
-    lastLogin: 'Today, 07:45 AM',
-  },
-  {
-    id: 'usr-10',
+    id: 'admin-main',
     name: 'Chief Administrator',
-    email: 'admin.aids@sbcollege.ac.in',
+    email: 'adminaids',
     role: 'admin',
     identifier: 'Staff: ADM-SYS-01',
     department: 'Artificial Intelligence & Data Science',
     status: 'active',
     lastLogin: 'Active Now',
-  },
+  }
 ];
 
 export default function AdminDashboardPage() {
@@ -170,32 +80,7 @@ export default function AdminDashboardPage() {
     setIsAdminLoggedIn(true);
   }, []);
 
-  const [pendingQueue, setPendingQueue] = useState<PendingItem[]>([
-    {
-      id: 'appr-1',
-      type: 'profile_edit',
-      applicant: 'Kevin Paul (Roll 220101)',
-      title: 'Added Sports Wing & Updated Skills: Docker, PyTorch',
-      details: 'Student requested addition of Sports Wing and updated portfolio URL.',
-      date: 'Today, 10:15 AM'
-    },
-    {
-      id: 'appr-2',
-      type: 'project_submission',
-      applicant: 'Ananya Roy & Sandra Joseph',
-      title: 'MedVoice: Clinical Documentation Assistant',
-      details: 'Healthcare AI LLM fine-tuned on bilingual Malayalam clinical consultation data.',
-      date: 'Yesterday, 04:30 PM'
-    },
-    {
-      id: 'appr-3',
-      type: 'comment',
-      applicant: 'Student Reviewer',
-      title: 'Comment on AgriMalayalam Project',
-      details: '\"Remarkable inference speed even on 3G rural cellular connections!\"',
-      date: '2 days ago'
-    }
-  ]);
+  const [pendingQueue, setPendingQueue] = useState<PendingItem[]>([]);
 
   const [activeTab, setActiveTab] = useState<'approvals' | 'logins' | 'content_editor' | 'notes' | 'announcements'>('logins');
   const [notification, setNotification] = useState<string | null>(null);

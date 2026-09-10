@@ -26,68 +26,7 @@ interface MemoryItem {
   likes: number;
 }
 
-const DEFAULT_MEMORIES: MemoryItem[] = [
-  {
-    id: "mem-1",
-    title: "Centenary AI Datathon 2025 All-Nighter",
-    category: "Tech & Hackathons",
-    date: "December 2025",
-    imageUrl: "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&h=600&fit=crop",
-    caption: "Teams brainstorming predictive algorithms in the Centenary Lab at 3:00 AM.",
-    uploadedBy: "Kevin Paul (Tech Team)",
-    likes: 42
-  },
-  {
-    id: "mem-2",
-    title: "Centenary Campus Walkway in Bloom",
-    category: "Campus Life",
-    date: "July 2026",
-    imageUrl: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=800&h=600&fit=crop",
-    caption: "Heritage architecture framed by the lush Changanassery greenery between lectures.",
-    uploadedBy: "Media Wing",
-    likes: 68
-  },
-  {
-    id: "mem-3",
-    title: "Hands-on PyTorch & Robotics Workshop",
-    category: "Workshops",
-    date: "August 2026",
-    imageUrl: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=800&h=600&fit=crop",
-    caption: "First batch students programming edge computer vision on Jetson modules.",
-    uploadedBy: "Dr. Arun Kumar R.",
-    likes: 54
-  },
-  {
-    id: "mem-4",
-    title: "Inter-Collegiate Basketball Champions Trophy",
-    category: "Cultural & Sports",
-    date: "March 2026",
-    imageUrl: "https://images.unsplash.com/photo-1546519638-68e109498ffc?w=800&h=600&fit=crop",
-    caption: "SB College Sports Wing clinching the championship cup with proud faculty.",
-    uploadedBy: "Tony Sebastian",
-    likes: 81
-  },
-  {
-    id: "mem-5",
-    title: "National Hackathon 1st Prize Celebration",
-    category: "Tech & Hackathons",
-    date: "August 2026",
-    imageUrl: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&h=600&fit=crop",
-    caption: "AgriMalayalam team receiving national recognition and grant.",
-    uploadedBy: "Ananya Roy",
-    likes: 95
-  },
-  {
-    id: "mem-6",
-    title: "NSS Kuttanad Rural Relief Camp",
-    category: "Campus Life",
-    date: "January 2026",
-    imageUrl: "https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=800&h=600&fit=crop",
-    caption: "Volunteers conducting digital literacy and soil moisture testing in rural villages.",
-    uploadedBy: "Sandra Joseph",
-    likes: 63
-  }
-];
+const DEFAULT_MEMORIES: MemoryItem[] = [];
 
 export default function GalleryPage() {
   const [memories, setMemories] = useState<MemoryItem[]>(DEFAULT_MEMORIES);

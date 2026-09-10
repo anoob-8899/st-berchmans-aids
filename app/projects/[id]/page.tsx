@@ -24,6 +24,21 @@ export default function ProjectDetailPage() {
 
   const project = INITIAL_PROJECTS.find(p => p.id === projectId) || INITIAL_PROJECTS[0];
 
+  if (!project) {
+    return (
+      <div className="min-h-[60vh] flex flex-col items-center justify-center bg-white px-4 text-center">
+        <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 mb-4">
+          <Code2 className="w-8 h-8" />
+        </div>
+        <h2 className="text-xl font-bold text-slate-800">Project Not Found</h2>
+        <p className="text-xs text-slate-500 mt-1 max-w-sm">The project you are looking for does not exist or has been removed.</p>
+        <Link href="/projects" className="mt-4 px-5 py-2.5 rounded-full bg-[#12192B] text-white text-xs font-bold uppercase tracking-wider">
+          Return to Projects Directory
+        </Link>
+      </div>
+    );
+  }
+
   const [comments, setComments] = useState<ProjectComment[]>(project.comments);
   const [userRating, setUserRating] = useState<number>(5);
   const [userName, setUserName] = useState('');

@@ -16,7 +16,17 @@ import {
 } from 'lucide-react';
 
 export default function FacultyDashboardPage() {
-  const faculty = FACULTY_MEMBERS[0]; // Dr. Joseph Varghese (HOD)
+  const faculty = FACULTY_MEMBERS[0] || {
+    id: 'fac-default',
+    name: 'Faculty Member',
+    designation: 'Assistant Professor',
+    qualification: 'M.Tech / Ph.D in Data Science',
+    specialization: 'Artificial Intelligence & Data Science',
+    experience: 'Academic Staff',
+    email: 'aids@sbcollege.ac.in',
+    photo: '/images/sb college logo.jpg',
+    researchInterests: ['Machine Learning', 'Data Mining'],
+  }; // Dr. Joseph Varghese (HOD)
 
   return (
     <div className="bg-[#F7F8F9] min-h-screen py-10">

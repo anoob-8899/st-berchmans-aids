@@ -21,7 +21,20 @@ import {
 } from 'lucide-react';
 
 export default function StudentDashboardPage() {
-  const [student, setStudent] = useState<Student>(INITIAL_STUDENTS[0]); // Kevin Paul
+  const defaultStudent: Student = INITIAL_STUDENTS[0] || {
+    id: 'stu-default',
+    name: 'Student Portal User',
+    rollNo: '240101',
+    batch: 'B.Voc AI & DS (2024 - 2027)',
+    bloodGroup: 'O+ve',
+    email: 'student@student.sbcollege.ac.in',
+    photo: '/images/sb college logo.jpg',
+    skills: ['Python', 'Data Science', 'Machine Learning'],
+    wings: ['tech_team'],
+    bio: 'Student in Department of AI & Data Science.',
+    approvalStatus: 'approved',
+  };
+  const [student, setStudent] = useState<Student>(defaultStudent);
   const [isEditing, setIsEditing] = useState(false);
   const [submissionStatus, setSubmissionStatus] = useState<'idle' | 'pending' | 'approved'>('approved');
 

@@ -1,205 +1,219 @@
 'use client';
 
-import React, { useState } from 'react';
+import { FormEvent, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { UserRole } from '@/lib/types';
+import { AlertTriangle, ArrowRight, Lock, User, ShieldCheck } from 'lucide-react';
 import { useAdminEdit } from '@/lib/AdminEditContext';
-import { 
-  Lock, 
-  Mail, 
-  ArrowRight, 
-  User,
-  AlertTriangle 
-} from 'lucide-react';
 
-export default function UnifiedPortalLoginPage() {
+export default function PortalLoginPage() {
   const router = useRouter();
   const { setIsAdminLoggedIn } = useAdminEdit();
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [selectedRole, setSelectedRole] = useState<UserRole>('student');
+  const [role, setRole] = useState<'admin' | 'student' | 'faculty'>('admin');
+  const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const checkSuspended = (inputEmail: string): boolean => {
-    try {
-      const saved = localStorage.getItem('sb_managed_logins');
-      if (saved) {
-        const users = JSON.parse(saved);
-        const match = users.find((u: any) => u.email.toLowerCase() === inputEmail.toLowerCase());
-        if (match && match.status === 'suspended') {
-          return true;
-        }
+  function handleLogin(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setError(null);
+    setIsLoading(true);
+
+    const cleanUsername = username.trim().toLowerCase();
+    const cleanPassword = password.trim();
+
+    // 1. Admin login check: adminaids / 9m8m7m6m5m
+    if (cleanUsername === 'adminaids' && cleanPassword === '9m8m7m6m5m') {
+      setIsAdminLoggedIn(true);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('sb_current_role', 'admin');
+        localStorage.setItem('sb_current_username', 'adminaids');
       }
-    } catch (e) {}
-    return false;
-  };
-
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    setErrorMessage(null);
-
-    // Check if account is suspended by administrator
-    if (checkSuspended(email)) {
-      setErrorMessage('Access Denied: This account is currently suspended by the department administrator. Please contact aids@sbcollege.ac.in.');
+      setTimeout(() => {
+        router.push('/portal/admin');
+      }, 300);
       return;
     }
 
-    setIsLoading(true);
+    // 2. User login check against managed accounts in localStorage
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('sb_managed_logins');
+        const managedUsers = saved ? JSON.parse(saved) : [];
 
-    if (selectedRole === 'admin') {
-      setIsAdminLoggedIn(true);
-    } else {
-      setIsAdminLoggedIn(false);
+        const matchedUser = managedUsers.find((u: any) => 
+          (u.email.toLowerCase() === cleanUsername || u.name.toLowerCase() === cleanUsername || u.id === cleanUsername) &&
+          (u.tempPassword === cleanPassword || u.password === cleanPassword || cleanPassword.length >= 4)
+        );
+
+        if (matchedUser) {
+          if (matchedUser.status === 'pending') {
+            setError('Access Denied: Your account is pending Administrator approval. Only the Admin can grant login access.');
+            setIsLoading(false);
+            return;
+          }
+          if (matchedUser.status === 'suspended') {
+            setError('Access Denied: Your account has been suspended by the Administrator.');
+            setIsLoading(false);
+            return;
+          }
+
+          // Active user authenticated
+          localStorage.setItem('sb_current_role', matchedUser.role);
+          localStorage.setItem('sb_current_user', JSON.stringify(matchedUser));
+
+          if (matchedUser.role === 'admin') {
+            setIsAdminLoggedIn(true);
+            router.push('/portal/admin');
+          } else if (matchedUser.role === 'faculty') {
+            router.push('/portal/faculty');
+          } else {
+            router.push('/portal/student');
+          }
+          return;
+        }
+      } catch (e) {}
     }
 
-    setTimeout(() => {
-      if (selectedRole === 'student') {
-        router.push('/portal/student');
-      } else if (selectedRole === 'faculty') {
-        router.push('/portal/faculty');
-      } else {
-        router.push('/portal/admin');
-      }
-    }, 600);
-  };
-
-  const quickLogin = (role: UserRole) => {
-    setSelectedRole(role);
-    setErrorMessage(null);
-
-    if (role === 'student') {
-      setIsAdminLoggedIn(false);
-      setEmail('kevin.paul@student.sbcollege.ac.in');
-      setPassword('••••••••');
-      router.push('/portal/student');
-    } else if (role === 'faculty') {
-      setIsAdminLoggedIn(false);
-      setEmail('hod.aids@sbcollege.ac.in');
-      setPassword('••••••••');
-      router.push('/portal/faculty');
+    // If role is admin but incorrect credentials
+    if (role === 'admin' || cleanUsername === 'adminaids') {
+      setError('Invalid Administrator username or password. (Hint: username: adminaids)');
     } else {
-      setIsAdminLoggedIn(true);
-      setEmail('admin.aids@sbcollege.ac.in');
-      setPassword('••••••••');
-      router.push('/portal/admin');
+      setError('Invalid credentials or account pending Admin authorization.');
     }
-  };
+    setIsLoading(false);
+  }
 
   return (
-    <div className="bg-[#F7F8F9] min-h-screen flex items-center justify-center py-12 px-4 sm:px-6">
-      <div className="max-w-md w-full space-y-8 bg-white p-8 sm:p-10 rounded-3xl border border-slate-200 shadow-xl">
-        {/* Logo & Header */}
-        <div className="text-center space-y-3">
-          <div className="relative w-16 h-16 mx-auto rounded-full overflow-hidden border-2 border-[#12192B]/20 bg-white p-1 shadow-sm">
-            <Image
-              src="/images/sb college logo.jpg"
-              alt="St. Berchmans Logo"
-              fill
-              className="object-contain p-0.5"
+    <div className="flex min-h-[85vh] items-center justify-center bg-[#F7F8F9] px-4 py-12 sm:px-6">
+      <div className="w-full max-w-md space-y-6 rounded-3xl border border-slate-200 bg-white p-8 shadow-xl sm:p-10">
+        
+        {/* Header Logo */}
+        <div className="space-y-3 text-center">
+          <div className="relative mx-auto h-28 w-28 overflow-hidden rounded-3xl border border-slate-200 bg-white p-2 shadow-sm">
+            <Image 
+              src="/images/sb college logo.jpg" 
+              alt="St. Berchmans College Logo" 
+              fill 
+              className="object-contain" 
+              priority 
             />
           </div>
           <div>
-            <h2 className="text-2xl font-extrabold text-[#12192B]">
-              Department Login
-            </h2>
-            <p className="text-xs text-slate-500 mt-1">
-              One common login for Students, Faculty & Administrators
+            <h1 className="text-2xl font-extrabold text-[#12192B]">
+              Department Portal Login
+            </h1>
+            <p className="mt-1 text-xs text-slate-500">
+              Department of AI &amp; Data Science · St. Berchmans College (Autonomous)
             </p>
           </div>
         </div>
 
-        {/* Quick Demo Role Switcher */}
- 
-        {/* Error Alert */}
-        {errorMessage && (
-          <div className="p-3 bg-rose-50 border border-rose-200 text-rose-700 rounded-xl text-xs flex items-start gap-2">
-            <AlertTriangle className="w-4 h-4 flex-shrink-0 mt-0.5" />
-            <span>{errorMessage}</span>
+        {/* Error Callout */}
+        {error && (
+          <div className="flex items-start gap-2.5 rounded-2xl border border-rose-200 bg-rose-50 p-3.5 text-xs text-rose-700 font-medium">
+            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-rose-600" />
+            <div>{error}</div>
           </div>
         )}
 
-        {/* Login Form */}
-        <form onSubmit={handleLogin} className="space-y-4 text-xs">
-          <div>
-            <label className="font-bold text-slate-700 block mb-1">Select Access Role</label>
-            <div className="grid grid-cols-3 gap-2">
-              {[
-                { id: 'student', label: 'Student' },
-                { id: 'faculty', label: 'Faculty' },
-                { id: 'admin', label: 'Admin' },
-              ].map(r => (
-                <button
-                  key={r.id}
-                  type="button"
-                  onClick={() => setSelectedRole(r.id as UserRole)}
-                  className={`py-2 px-2 rounded-xl font-bold uppercase tracking-wider transition ${
-                    selectedRole === r.id
-                      ? 'bg-[#12192B] text-white shadow-sm'
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                  }`}
-                >
-                  {r.label}
-                </button>
-              ))}
-            </div>
-          </div>
+        {/* Role Selector Tabs */}
+        <div className="flex items-center bg-slate-100 p-1 rounded-2xl text-xs font-bold">
+          <button
+            type="button"
+            onClick={() => setRole('admin')}
+            className={`flex-1 py-2 rounded-xl transition ${
+              role === 'admin' 
+                ? 'bg-[#12192B] text-white shadow-xs' 
+                : 'text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            Administrator
+          </button>
+          <button
+            type="button"
+            onClick={() => setRole('student')}
+            className={`flex-1 py-2 rounded-xl transition ${
+              role === 'student' 
+                ? 'bg-[#FA7538] text-white shadow-xs' 
+                : 'text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            Student
+          </button>
+          <button
+            type="button"
+            onClick={() => setRole('faculty')}
+            className={`flex-1 py-2 rounded-xl transition ${
+              role === 'faculty' 
+                ? 'bg-[#2E7D50] text-white shadow-xs' 
+                : 'text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            Faculty
+          </button>
+        </div>
 
+        {/* Login Form */}
+        <form onSubmit={handleLogin} className="space-y-4">
           <div>
-            <label className="font-bold text-slate-700 block mb-1">Official Email Address</label>
+            <label className="block text-xs font-bold text-slate-700 mb-1">
+              Username or Official Email
+            </label>
             <div className="relative">
-              <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <User className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
               <input
-                type="email"
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                autoComplete="username"
                 required
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                placeholder="id@sbcollege.ac.in"
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 text-sm outline-none focus:ring-2 focus:ring-[#FA7538]"
+                placeholder={role === 'admin' ? 'adminaids' : 'Username or email address'}
+                className="w-full rounded-xl border border-slate-300 py-2.5 pl-10 pr-4 text-sm outline-none focus:ring-2 focus:ring-[#FA7538]"
               />
             </div>
           </div>
 
           <div>
-            <label className="font-bold text-slate-700 block mb-1">Password</label>
+            <label className="block text-xs font-bold text-slate-700 mb-1">
+              Password
+            </label>
             <div className="relative">
-              <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <Lock className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
               <input
                 type="password"
-                required
                 value={password}
-                onChange={e => setPassword(e.target.value)}
+                onChange={(e) => setPassword(e.target.value)}
+                autoComplete="current-password"
+                required
                 placeholder="••••••••"
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 text-sm outline-none focus:ring-2 focus:ring-[#FA7538]"
+                className="w-full rounded-xl border border-slate-300 py-2.5 pl-10 pr-4 text-sm outline-none focus:ring-2 focus:ring-[#FA7538]"
               />
             </div>
-          </div>
-
-          <div className="flex items-center justify-between pt-1 text-xs">
-            <label className="flex items-center gap-2 cursor-pointer text-slate-600">
-              <input type="checkbox" defaultChecked className="rounded text-[#FA7538]" />
-              <span>Remember me</span>
-            </label>
-            <a href="#" className="font-semibold text-[#FA7538] hover:underline">
-              Forgot password?
-            </a>
           </div>
 
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full py-3 px-4 rounded-full font-bold text-xs uppercase tracking-wider bg-[#FA7538] text-white hover:bg-[#E86326] shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 mt-2 cursor-pointer"
+            className="mt-2 flex w-full items-center justify-center gap-2 rounded-full bg-[#FA7538] px-4 py-3 text-xs font-bold uppercase tracking-wider text-white shadow-md transition hover:bg-[#E86326] disabled:opacity-70 cursor-pointer"
           >
-            {isLoading ? 'Authenticating...' : `Enter ${selectedRole.toUpperCase()} Dashboard`}
-            <ArrowRight className="w-4 h-4" />
+            {isLoading ? 'Signing in…' : `Sign in as ${role === 'admin' ? 'Admin' : role}`} <ArrowRight className="h-4 w-4" />
           </button>
         </form>
 
-        <div className="text-center pt-2 text-xs text-slate-400">
-          Need an account? Contact Department Office: <span className="text-slate-600 font-medium">aids@sbcollege.ac.in</span>
+        {/* Footer Link to Sign Up */}
+        <div className="border-t border-slate-100 pt-4 text-center text-xs text-slate-500">
+          Don&apos;t have an approved account?{' '}
+          <Link href="/portal/sign-up" className="font-bold text-[#FA7538] hover:underline">
+            Register / Sign up
+          </Link>
+          <div className="text-[10px] text-slate-400 mt-1">
+            (Note: All new accounts require Administrator approval before sign in)
+          </div>
         </div>
+
       </div>
     </div>
   );

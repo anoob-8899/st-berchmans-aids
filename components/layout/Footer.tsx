@@ -90,8 +90,8 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/about/skill-hub" className="text-[#FA7538] font-medium hover:underline flex items-center gap-1">
-                  SB Skill Hub (26 Courses)
+                <Link href="/about/skill-hub" className="hover:text-[#FA7538] transition-colors">
+                  SB Skill Hub
                 </Link>
               </li>
             </ul>

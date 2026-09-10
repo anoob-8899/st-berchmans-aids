@@ -14,7 +14,8 @@ import {
   Trophy, 
   Sparkles,
   CheckCircle2,
-  ExternalLink
+  ExternalLink,
+  User
 } from 'lucide-react';
 
 export default function StudentDetailPage() {
@@ -22,6 +23,21 @@ export default function StudentDetailPage() {
   const studentId = params?.id as string;
 
   const student = INITIAL_STUDENTS.find(s => s.id === studentId) || INITIAL_STUDENTS[0];
+
+  if (!student) {
+    return (
+      <div className="min-h-[60vh] flex flex-col items-center justify-center bg-white px-4 text-center">
+        <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 mb-4">
+          <User className="w-8 h-8" />
+        </div>
+        <h2 className="text-xl font-bold text-slate-800">Student Profile Not Found</h2>
+        <p className="text-xs text-slate-500 mt-1 max-w-sm">The requested student profile is unavailable or undergoing update.</p>
+        <Link href="/people/students" className="mt-4 px-5 py-2.5 rounded-full bg-[#12192B] text-white text-xs font-bold uppercase tracking-wider">
+          Return to Students Directory
+        </Link>
+      </div>
+    );
+  }
 
   // Projects where this student is a team member or submitter
   const studentProjects = INITIAL_PROJECTS.filter(p => 
