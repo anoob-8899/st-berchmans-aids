@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAdminEdit } from '@/lib/AdminEditContext';
+import { MARIO_KNOWLEDGE_BASE, queryMarioKnowledge, KnowledgeAnswer } from '@/lib/marioKnowledge';
 import { 
   ShieldCheck, 
   CheckCircle2, 
@@ -35,7 +36,9 @@ import {
   RefreshCw,
   Copy,
   Mail,
-  User
+  User,
+  Bot,
+  Brain
 } from 'lucide-react';
 
 interface PendingItem {
@@ -82,10 +85,76 @@ export default function AdminDashboardPage() {
 
   const [pendingQueue, setPendingQueue] = useState<PendingItem[]>([]);
 
-  const [activeTab, setActiveTab] = useState<'approvals' | 'logins' | 'content_editor' | 'notes' | 'announcements'>('logins');
+  const [activeTab, setActiveTab] = useState<'approvals' | 'logins' | 'content_editor' | 'notes' | 'announcements' | 'mario_trainer'>('logins');
   const [notification, setNotification] = useState<string | null>(null);
 
   // Content state
+    // MARIO AI Training States
+  const [customKnowledge, setCustomKnowledge] = useState<KnowledgeAnswer[]>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('sb_mario_custom_knowledge');
+        if (saved) return JSON.parse(saved);
+      } catch (e) {}
+    }
+    return [];
+  });
+
+  const [aiKeywords, setAiKeywords] = useState('');
+  const [aiAnswerEn, setAiAnswerEn] = useState('');
+  const [aiAnswerMl, setAiAnswerMl] = useState('');
+  const [aiRelatedLink, setAiRelatedLink] = useState('');
+  const [testQuery, setTestQuery] = useState('');
+  const [testResult, setTestResult] = useState<{ answer: string; relatedLink?: string } | null>(null);
+
+  const saveCustomKnowledge = (updated: KnowledgeAnswer[]) => {
+    setCustomKnowledge(updated);
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('sb_mario_custom_knowledge', JSON.stringify(updated));
+      } catch (e) {}
+    }
+  };
+
+  const handleAddAiRule = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!aiKeywords.trim() || !aiAnswerEn.trim()) {
+      notify('Please provide trigger keywords and English answer.');
+      return;
+    }
+
+    const keywordsArray = aiKeywords.split(',').map(k => k.trim().toLowerCase()).filter(Boolean);
+    const newRule: KnowledgeAnswer = {
+      id: `custom-kb-${Date.now()}`,
+      keywords: keywordsArray,
+      answerEn: aiAnswerEn.trim(),
+      answerMl: aiAnswerMl.trim() || aiAnswerEn.trim(),
+      relatedLink: aiRelatedLink.trim() || undefined,
+      isCustom: true,
+    };
+
+    const updated = [newRule, ...customKnowledge];
+    saveCustomKnowledge(updated);
+    setAiKeywords('');
+    setAiAnswerEn('');
+    setAiAnswerMl('');
+    setAiRelatedLink('');
+    notify('Successfully trained MARIO with new AI Q&A rule!');
+  };
+
+  const handleDeleteAiRule = (ruleId: string) => {
+    const updated = customKnowledge.filter(k => k.id !== ruleId);
+    saveCustomKnowledge(updated);
+    notify('Trained AI rule removed from MARIO knowledge base.');
+  };
+
+  const handleTestAiQuery = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!testQuery.trim()) return;
+    const res = queryMarioKnowledge(testQuery, 'en');
+    setTestResult(res);
+  };
+
   const [heroTitle, setHeroTitle] = useState(getContent('home.hero.title', 'Department of Artificial Intelligence & Data Science'));
   const [heroSubtitle, setHeroSubtitle] = useState(getContent('home.hero.subtitle', 'Moulding future innovators through cutting-edge AI research, industry-ready data science mastery, and holistic ethical leadership.'));
   const [visionText, setVisionText] = useState(getContent('vision.text', 'To be a premier center of intellectual illumination and technological transformation, moulding young men and women of unimpeachable character, creative technical vision, and dedication to God and humanity.'));
@@ -343,6 +412,19 @@ export default function AdminDashboardPage() {
           >
             <Bell className="w-3.5 h-3.5" />
             <span>Announcements</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveTab('mario_trainer')}
+            className={`px-5 py-2.5 rounded-full font-bold uppercase tracking-wider whitespace-nowrap transition flex items-center gap-1.5 ${
+              activeTab === 'mario_trainer'
+                ? 'bg-[#FA7538] text-white shadow-sm'
+                : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'
+            }`}
+          >
+            <Bot className="w-3.5 h-3.5" />
+            <span>🤖 MARIO AI Trainer ({customKnowledge.length})</span>
           </button>
         </div>
 
