@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { CheckCircle2, User, Mail, Lock, ShieldCheck, ArrowLeft, ArrowRight, Key, Upload, Camera, Eye, EyeOff } from 'lucide-react';
+import { saveUserAccount } from '@/lib/userApi';
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -35,7 +36,7 @@ export default function SignUpPage() {
     }
   }
 
-  function handleSignUp(e: FormEvent<HTMLFormElement>) {
+  async function handleSignUp(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!fullName.trim() || !username.trim()) return;
 
@@ -48,23 +49,14 @@ export default function SignUpPage() {
       role,
       identifier: identifier.trim() || (role === 'student' ? 'Roll: ' + Math.floor(240100 + Math.random() * 99) : 'Staff: FAC-AI-' + Math.floor(10 + Math.random() * 89)),
       department: 'Artificial Intelligence & Data Science',
-      status: 'pending', // Pending Admin Approval
+      status: 'pending' as const, // Pending Admin Approval
       approvalStatus: 'pending',
       lastLogin: 'Pending Approval',
       password: password.trim() || 'SBCollege@2026',
       photo: photo || '/images/sb college logo.jpg'
     };
 
-    if (typeof window !== 'undefined') {
-      try {
-        const saved = localStorage.getItem('sb_managed_logins');
-        const existingUsers = saved ? JSON.parse(saved) : [];
-        const updated = [newAccount, ...existingUsers.filter((u: any) => u.username !== cleanUserStr && u.id !== newAccount.id)];
-        localStorage.setItem('sb_managed_logins', JSON.stringify(updated));
-        window.dispatchEvent(new Event('storage'));
-      } catch (e) {}
-    }
-
+    await saveUserAccount(newAccount);
     setIsSubmitted(true);
   }
 

@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { INITIAL_STUDENTS, INITIAL_PROJECTS, ACHIEVEMENTS } from '@/lib/mockData';
 import { Student, CollegeWing } from '@/lib/types';
+import { saveUserAccount } from '@/lib/userApi';
 import { 
   User, 
   Edit3, 
@@ -100,7 +101,7 @@ export default function StudentDashboardPage() {
     );
   };
 
-  const handleSaveProfileEdits = (e: React.FormEvent) => {
+  const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     const updatedStudent: Student = {
       ...student,
@@ -115,7 +116,7 @@ export default function StudentDashboardPage() {
     };
     setStudent(updatedStudent);
 
-    // Save to localStorage
+    // Save to localStorage and API
     if (typeof window !== 'undefined') {
       try {
         const savedUser = localStorage.getItem('sb_current_user');
@@ -124,6 +125,7 @@ export default function StudentDashboardPage() {
           userObj.name = name;
           userObj.photo = photo;
           localStorage.setItem('sb_current_user', JSON.stringify(userObj));
+          await saveUserAccount(userObj);
         }
 
         const savedLogins = localStorage.getItem('sb_managed_logins');
@@ -222,7 +224,7 @@ export default function StudentDashboardPage() {
               <p className="text-xs text-slate-400">Updates are moderated by the department administration.</p>
             </div>
 
-            <form onSubmit={handleSaveProfileEdits} className="space-y-4 text-xs">
+            <form onSubmit={handleSaveProfile} className="space-y-4 text-xs">
               {/* Profile Picture File Upload */}
               <div className="p-4 rounded-2xl border border-dashed border-slate-300 bg-slate-50/50 flex flex-col sm:flex-row sm:items-center gap-4">
                 <div className="relative w-16 h-16 rounded-2xl overflow-hidden bg-white border border-slate-200 shadow-xs flex-shrink-0">

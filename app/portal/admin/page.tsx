@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAdminEdit } from '@/lib/AdminEditContext';
+import { fetchManagedUsers, bulkUpdateUsers, deleteUserAccount } from '@/lib/userApi';
 import { MARIO_KNOWLEDGE_BASE, queryMarioKnowledge, KnowledgeAnswer } from '@/lib/marioKnowledge';
 import { 
   ShieldCheck, 
@@ -86,42 +87,33 @@ export default function AdminDashboardPage() {
   useEffect(() => {
     setIsAdminLoggedIn(true);
 
-    function syncLogins() {
-      if (typeof window !== 'undefined') {
-        try {
-          const saved = localStorage.getItem('sb_managed_logins');
-          if (saved) {
-            const parsed: ManagedUser[] = JSON.parse(saved);
-            // Requirement 2: Permanently remove demo accounts (Antony Vincent & Dr. Joseph Varghese)
-            const filtered = parsed.filter(u => 
-              u.id !== 'fac-main' && 
-              u.id !== 'stu-main' && 
-              !u.name.toLowerCase().includes('joseph varghese') && 
-              !u.name.toLowerCase().includes('antony vincent')
-            );
-
-            // Ensure adminaids is active
-            const sanitized = filtered.map(u => {
-              if (u.id === 'admin-main' || (u.email && u.email.toLowerCase() === 'adminaids')) {
-                return { ...u, status: 'active' as const };
-              }
-              return u;
-            });
-
-            setUserLogins(sanitized);
-            localStorage.setItem('sb_managed_logins', JSON.stringify(sanitized));
-          } else {
-            localStorage.setItem('sb_managed_logins', JSON.stringify(DEFAULT_MANAGED_USERS));
-            setUserLogins(DEFAULT_MANAGED_USERS);
-          }
-        } catch (e) {}
-      }
+    async function syncLogins() {
+      try {
+        const users = await fetchManagedUsers();
+        if (users && users.length > 0) {
+          const filtered = users.filter(u => 
+            u.id !== 'fac-main' && 
+            u.id !== 'stu-main' && 
+            !u.name.toLowerCase().includes('joseph varghese') && 
+            !u.name.toLowerCase().includes('antony vincent')
+          );
+          const sanitized = filtered.map(u => {
+            if (u.id === 'admin-main' || (u.email && u.email.toLowerCase() === 'adminaids')) {
+              return { ...u, status: 'active' as const };
+            }
+            return u;
+          });
+          setUserLogins(sanitized);
+        }
+      } catch (e) {}
     }
 
     syncLogins();
+    const interval = setInterval(syncLogins, 5000);
     window.addEventListener('storage', syncLogins);
     window.addEventListener('focus', syncLogins);
     return () => {
+      clearInterval(interval);
       window.removeEventListener('storage', syncLogins);
       window.removeEventListener('focus', syncLogins);
     };
@@ -244,14 +236,9 @@ export default function AdminDashboardPage() {
     }
   };
 
-  const saveUserLogins = (updatedUsers: ManagedUser[]) => {
+  const saveUserLogins = async (updatedUsers: ManagedUser[]) => {
     setUserLogins(updatedUsers);
-    if (typeof window !== 'undefined') {
-      try {
-        localStorage.setItem('sb_managed_logins', JSON.stringify(updatedUsers));
-        window.dispatchEvent(new Event('storage'));
-      } catch (e) {}
-    }
+    await bulkUpdateUsers(updatedUsers);
   };
 
   const notify = (msg: string) => {
@@ -260,22 +247,14 @@ export default function AdminDashboardPage() {
   };
 
   // Toggle user active / suspended status (Approve / Activate / Suspend)
-  const handleToggleStatus = (userId: string) => {
-    let currentLogins = userLogins;
-    if (typeof window !== 'undefined') {
-      try {
-        const saved = localStorage.getItem('sb_managed_logins');
-        if (saved) currentLogins = JSON.parse(saved);
-      } catch (e) {}
-    }
-
-    const targetUser = currentLogins.find(u => u.id === userId);
+  const handleToggleStatus = async (userId: string) => {
+    const targetUser = userLogins.find(u => u.id === userId);
     if (userId === 'admin-main' || targetUser?.email === 'adminaids' || (targetUser?.name && targetUser.name.toLowerCase().includes('chief administrator'))) {
       notify('Chief Administrator (adminaids) is permanently active and cannot be suspended.');
       return;
     }
 
-    const updated = currentLogins.map(u => {
+    const updated = userLogins.map(u => {
       if (u.id === userId) {
         const newStatus = u.status === 'active' ? 'suspended' : 'active';
         return { 
@@ -288,22 +267,14 @@ export default function AdminDashboardPage() {
       }
       return u;
     });
-    saveUserLogins(updated);
+    await saveUserLogins(updated);
     const target = updated.find(u => u.id === userId);
     notify(`Account status updated: ${target?.name} is now ${target?.status.toUpperCase()}`);
   };
 
   // Requirement 1: Grant 1-Time Login Permission from Admin
-  const handleGrantOneTimePermission = (userId: string) => {
-    let currentLogins = userLogins;
-    if (typeof window !== 'undefined') {
-      try {
-        const saved = localStorage.getItem('sb_managed_logins');
-        if (saved) currentLogins = JSON.parse(saved);
-      } catch (e) {}
-    }
-
-    const updated = currentLogins.map(u => {
+  const handleGrantOneTimePermission = async (userId: string) => {
+    const updated = userLogins.map(u => {
       if (u.id === userId) {
         return { 
           ...u, 
@@ -314,13 +285,13 @@ export default function AdminDashboardPage() {
       }
       return u;
     });
-    saveUserLogins(updated);
+    await saveUserLogins(updated);
     const target = updated.find(u => u.id === userId);
     notify(`1-Time Login Permission granted for ${target?.name}`);
   };
 
   // Reset password
-  const handleResetPassword = (userId: string) => {
+  const handleResetPassword = async (userId: string) => {
     const tempPass = `SB#AI-${Math.floor(1000 + Math.random() * 9000)}!`;
     const updated = userLogins.map(u => {
       if (u.id === userId) {
@@ -328,26 +299,26 @@ export default function AdminDashboardPage() {
       }
       return u;
     });
-    saveUserLogins(updated);
+    await saveUserLogins(updated);
     const target = updated.find(u => u.id === userId);
     notify(`Temporary password generated for ${target?.name}: ${tempPass}`);
   };
 
   // Delete user login
-  const handleDeleteUser = (userId: string, name: string) => {
+  const handleDeleteUser = async (userId: string, name: string) => {
     if (userId === 'admin-main' || name.toLowerCase().includes('adminaids') || name.toLowerCase().includes('chief administrator')) {
       notify('Chief Administrator (adminaids) cannot be deleted.');
       return;
     }
     if (confirm(`Are you sure you want to revoke login access and remove ${name}?`)) {
-      const updated = userLogins.filter(u => u.id !== userId);
-      saveUserLogins(updated);
+      const updated = await deleteUserAccount(userId);
+      setUserLogins(updated);
       notify(`Login credentials deleted for ${name}`);
     }
   };
 
   // Create new user login
-  const handleCreateUser = (e: React.FormEvent) => {
+  const handleCreateUser = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newUserName.trim() || !newUserEmail.trim()) {
       notify('Please fill in all required fields.');
@@ -370,16 +341,8 @@ export default function AdminDashboardPage() {
       photo: newUserPhoto || '/images/sb college logo.jpg'
     };
 
-    let currentLogins = userLogins;
-    if (typeof window !== 'undefined') {
-      try {
-        const saved = localStorage.getItem('sb_managed_logins');
-        if (saved) currentLogins = JSON.parse(saved);
-      } catch (e) {}
-    }
-
-    const updated = [newUser, ...currentLogins];
-    saveUserLogins(updated);
+    const updated = [newUser, ...userLogins];
+    await saveUserLogins(updated);
     setShowAddUserModal(false);
     setNewUserName('');
     setNewUserEmail('');

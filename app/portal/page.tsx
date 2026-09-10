@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { AlertTriangle, ArrowRight, Lock, User, ShieldCheck, Eye, EyeOff } from 'lucide-react';
 import { useAdminEdit } from '@/lib/AdminEditContext';
+import { fetchManagedUsers, saveUserAccount } from '@/lib/userApi';
 
 export default function PortalLoginPage() {
   const router = useRouter();
@@ -17,7 +18,7 @@ export default function PortalLoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  function handleLogin(event: FormEvent<HTMLFormElement>) {
+  async function handleLogin(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError(null);
     setIsLoading(true);
@@ -33,21 +34,6 @@ export default function PortalLoginPage() {
         localStorage.setItem('sb_current_role', 'admin');
         localStorage.setItem('sb_current_username', 'adminaids');
         localStorage.setItem('sb_logged_in', 'true');
-        
-        // Ensure adminaids is always unsuspended in sb_managed_logins if present
-        try {
-          const saved = localStorage.getItem('sb_managed_logins');
-          if (saved) {
-            const users = JSON.parse(saved);
-            const updated = users.map((u: any) => {
-              if (u.id === 'admin-main' || (u.username && u.username.toLowerCase() === 'adminaids')) {
-                return { ...u, status: 'active' };
-              }
-              return u;
-            });
-            localStorage.setItem('sb_managed_logins', JSON.stringify(updated));
-          }
-        } catch (err) {}
       }
       setTimeout(() => {
         router.push('/portal/admin');
@@ -55,84 +41,83 @@ export default function PortalLoginPage() {
       return;
     }
 
-    // 2. User login check against managed accounts in localStorage
-    if (typeof window !== 'undefined') {
-      try {
-        const saved = localStorage.getItem('sb_managed_logins');
-        const managedUsers = saved ? JSON.parse(saved) : [];
+    // 2. Fetch fresh user logins from server database API
+    try {
+      const managedUsers = await fetchManagedUsers();
 
-        const matchedUser = managedUsers.find((u: any) => {
-          const uName = (u.username || '').toLowerCase();
-          const uEmail = (u.email || '').toLowerCase();
-          const uFullName = (u.name || '').toLowerCase();
-          const uId = (u.id || '').toLowerCase();
-          const uIdentifier = (u.identifier || '').toLowerCase();
-          const uEmailPrefix = uEmail.split('@')[0];
+      const matchedUser = managedUsers.find((u: any) => {
+        const uName = (u.username || '').toLowerCase();
+        const uEmail = (u.email || '').toLowerCase();
+        const uFullName = (u.name || '').toLowerCase();
+        const uId = (u.id || '').toLowerCase();
+        const uIdentifier = (u.identifier || '').toLowerCase();
+        const uEmailPrefix = uEmail.split('@')[0];
 
-          const cleanUserNum = cleanUsername.replace(/^(roll|staff|fac|id)[:\s]*/i, '').trim();
-          const uIdentifierClean = uIdentifier.replace(/^(roll|staff|fac|id)[:\s]*/i, '').trim();
+        const cleanUserNum = cleanUsername.replace(/^(roll|staff|fac|id)[:\s]*/i, '').trim();
+        const uIdentifierClean = uIdentifier.replace(/^(roll|staff|fac|id)[:\s]*/i, '').trim();
 
-          const identifierMatch = 
-            uName === cleanUsername ||
-            uEmail === cleanUsername ||
-            uEmailPrefix === cleanUsername ||
-            uFullName === cleanUsername ||
-            uId === cleanUsername ||
-            uIdentifier === cleanUsername ||
-            (cleanUserNum.length > 0 && uIdentifierClean === cleanUserNum) ||
-            (cleanUserNum.length >= 3 && uIdentifier.includes(cleanUserNum));
+        const identifierMatch = 
+          uName === cleanUsername ||
+          uEmail === cleanUsername ||
+          uEmailPrefix === cleanUsername ||
+          uFullName === cleanUsername ||
+          uId === cleanUsername ||
+          uIdentifier === cleanUsername ||
+          (cleanUserNum.length > 0 && uIdentifierClean === cleanUserNum) ||
+          (cleanUserNum.length >= 3 && uIdentifier.includes(cleanUserNum));
 
-          const passwordMatch = 
-            !u.password ||
-            u.password === cleanPassword ||
-            u.tempPassword === cleanPassword ||
-            cleanPassword === 'SBCollege@2026' ||
-            cleanPassword.length >= 1;
+        const passwordMatch = 
+          !u.password ||
+          u.password === cleanPassword ||
+          u.tempPassword === cleanPassword ||
+          cleanPassword === 'SBCollege@2026' ||
+          cleanPassword.length >= 1;
 
-          return identifierMatch && passwordMatch;
-        });
+        return identifierMatch && passwordMatch;
+      });
 
-        if (matchedUser) {
-          if (matchedUser.status === 'pending') {
-            setError('Access Denied: Your account is pending Administrator approval. Only the Admin can grant login access.');
-            setIsLoading(false);
-            return;
-          }
-          if (matchedUser.status === 'suspended') {
-            setError('Access Denied: Your account has been suspended by the Administrator.');
-            setIsLoading(false);
-            return;
-          }
+      if (matchedUser) {
+        if (matchedUser.status === 'pending') {
+          setError('Access Denied: Your account is pending Administrator approval. Only the Admin can grant login access.');
+          setIsLoading(false);
+          return;
+        }
+        if (matchedUser.status === 'suspended') {
+          setError('Access Denied: Your account has been suspended by the Administrator.');
+          setIsLoading(false);
+          return;
+        }
 
-          // If user had one-time permission granted by admin, consume it now
-          if (matchedUser.oneTimePermission) {
-            const updatedUsers = managedUsers.map((u: any) => {
-              if (u.id === matchedUser.id) {
-                return { ...u, oneTimePermission: false, status: 'pending', lastLogin: `1-Time Permission Used (${new Date().toLocaleTimeString()})` };
-              }
-              return u;
-            });
-            localStorage.setItem('sb_managed_logins', JSON.stringify(updatedUsers));
-          }
+        // If user had one-time permission granted by admin, consume it now & save to server
+        if (matchedUser.oneTimePermission) {
+          const updatedUser = { 
+            ...matchedUser, 
+            oneTimePermission: false, 
+            status: 'pending' as const, 
+            lastLogin: `1-Time Permission Used (${new Date().toLocaleTimeString()})` 
+          };
+          await saveUserAccount(updatedUser);
+        }
 
-          // Active user authenticated
+        // Active user authenticated
+        if (typeof window !== 'undefined') {
           localStorage.setItem('sb_user_role', matchedUser.role);
           localStorage.setItem('sb_current_role', matchedUser.role);
           localStorage.setItem('sb_current_user', JSON.stringify(matchedUser));
           localStorage.setItem('sb_logged_in', 'true');
-
-          if (matchedUser.role === 'admin') {
-            setIsAdminLoggedIn(true);
-            router.push('/portal/admin');
-          } else if (matchedUser.role === 'faculty') {
-            router.push('/portal/faculty');
-          } else {
-            router.push('/portal/student');
-          }
-          return;
         }
-      } catch (e) {}
-    }
+
+        if (matchedUser.role === 'admin') {
+          setIsAdminLoggedIn(true);
+          router.push('/portal/admin');
+        } else if (matchedUser.role === 'faculty') {
+          router.push('/portal/faculty');
+        } else {
+          router.push('/portal/student');
+        }
+        return;
+      }
+    } catch (e) {}
 
     if (cleanUsername === 'adminaids') {
       setError('Invalid Administrator password. (Hint: username: adminaids, password: 9m8m7m6m5m)');
