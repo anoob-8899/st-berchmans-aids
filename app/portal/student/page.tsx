@@ -51,18 +51,26 @@ export default function StudentDashboardPage() {
             id: user.id || defaultStudent.id,
             name: user.name || defaultStudent.name,
             rollNo: user.identifier || defaultStudent.rollNo,
-            batch: 'B.Sc. AI & DS (2026 - 2030)',
-            bloodGroup: 'O+ve',
+            batch: user.batch || 'B.Sc. AI & DS (2026 - 2030)',
+            bloodGroup: user.bloodGroup || 'O+ve',
             email: user.email || defaultStudent.email,
             photo: user.photo || '/images/sb college logo.jpg',
-            skills: ['Python', 'Data Science', 'AI Foundations'],
-            wings: ['tech_team'],
-            bio: 'Active student registered in the Department of AI & Data Science.',
+            skills: (user.skills && user.skills.length > 0) ? user.skills : ['Python', 'Data Science', 'AI Foundations'],
+            wings: (user.wings && user.wings.length > 0) ? user.wings : ['tech_team'],
+            bio: user.bio || 'Active student registered in the Department of AI & Data Science.',
             approvalStatus: 'approved',
+            linkedIn: user.linkedIn,
+            portfolioUrl: user.portfolioUrl,
           };
           setStudent(activeStudent);
           setName(activeStudent.name);
           setPhoto(activeStudent.photo);
+          setBloodGroup(activeStudent.bloodGroup);
+          setSkills(activeStudent.skills.join(', '));
+          setSelectedWings(activeStudent.wings);
+          setBio(activeStudent.bio);
+          if (user.linkedIn) setLinkedIn(user.linkedIn);
+          if (user.portfolioUrl) setPortfolioUrl(user.portfolioUrl);
         }
       } catch (e) {}
     }

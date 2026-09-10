@@ -27,7 +27,7 @@ export default function StudentsDirectoryPage() {
         const res = await fetch('/api/students', { cache: 'no-store' });
         if (res.ok) {
           const data = await res.json();
-          if (data.success && Array.isArray(data.students) && data.students.length > 0) {
+          if (data.success && Array.isArray(data.students)) {
             setStudentsList(data.students);
           }
         }
