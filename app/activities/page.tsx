@@ -20,10 +20,36 @@ import {
 
 export default function ActivitiesPage() {
   const [activeTab, setActiveTab] = useState<string>('nss');
+  const [studentsList, setStudentsList] = useState<any[]>(INITIAL_STUDENTS);
+
+  React.useEffect(() => {
+    // Check URL hash for direct navigation e.g. /activities#tech_team
+    if (typeof window !== 'undefined' && window.location.hash) {
+      const hash = window.location.hash.replace('#', '');
+      if (WINGS_INFO.some(w => w.id === hash)) {
+        setActiveTab(hash);
+      }
+    }
+
+    async function loadStudents() {
+      try {
+        const res = await fetch('/api/students', { cache: 'no-store' });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && Array.isArray(data.students) && data.students.length > 0) {
+            setStudentsList(data.students);
+          }
+        }
+      } catch (err) {
+        console.warn('Error fetching students for wings:', err);
+      }
+    }
+    loadStudents();
+  }, []);
 
   // Find students belonging to a wing
   const getStudentsForWing = (wingId: string) => {
-    return INITIAL_STUDENTS.filter(s => s.wings.includes(wingId as CollegeWing));
+    return studentsList.filter(s => Array.isArray(s.wings) && s.wings.includes(wingId as CollegeWing));
   };
 
   const selectedWing = WINGS_INFO.find(w => w.id === activeTab) || WINGS_INFO[0];

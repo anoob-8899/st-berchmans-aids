@@ -1,0 +1,33 @@
+[
+  {
+    "id": "stu-vincent",
+    "name": "Vincent Antony",
+    "rollNo": "401",
+    "batch": "B.Sc. AI & DS (2026 - 2030)",
+    "bloodGroup": "O+ve",
+    "email": "vincent.antony@student.sbcollege.ac.in",
+    "phone": "+91 98470 12345",
+    "photo": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop",
+    "linkedIn": "https://linkedin.com/in/vincent-antony",
+    "portfolioUrl": "https://vincent-antony-ai.dev",
+    "skills": [
+      "PyTorch",
+      "Computer Vision",
+      "Next.js",
+      "Python",
+      "OpenCV",
+      "Data Science",
+      "Machine Learning",
+      "NLP"
+    ],
+    "wings": [
+      "tech_team",
+      "media_team",
+      "nss",
+      "ncc",
+      "sports"
+    ],
+    "bio": "Department of AI & Data Science Innovator specializing in Malayalam Computer Vision, Full-Stack AI Development, and holistic campus leadership.",
+    "approvalStatus": "approved"
+  }
+]
