@@ -11,7 +11,8 @@ import {
   Menu, 
   X, 
   ChevronDown, 
-  User, 
+  User,
+  LogOut, 
   Sparkles, 
   Edit3
 } from 'lucide-react';
@@ -43,6 +44,30 @@ export const Header: React.FC = () => {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
+
+  const [currentUserRole, setCurrentUserRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const role = localStorage.getItem('sb_current_role') || localStorage.getItem('sb_user_role');
+      setCurrentUserRole(role);
+    }
+  }, [isAdminLoggedIn, pathname]);
+
+  const isLoggedIn = isAdminLoggedIn || !!currentUserRole;
+
+  const handleLogout = () => {
+    setIsAdminLoggedIn(false);
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('sb_current_role');
+      localStorage.removeItem('sb_user_role');
+      localStorage.removeItem('sb_current_user');
+      localStorage.removeItem('sb_current_username');
+      localStorage.removeItem('sb_admin_mode');
+    }
+    setCurrentUserRole(null);
+    closeMenus();
+  };
 
   const closeMenus = () => {
     setMobileMenuOpen(false);
@@ -108,21 +133,21 @@ export const Header: React.FC = () => {
               </button>
             </div>
 
-            {/* Login / Admin Status Link */}
-            {isAdminLoggedIn ? (
+            {/* Login / Dashboard / Logout Link */}
+            {isLoggedIn ? (
               <div className="flex items-center gap-2">
                 <Link
-                  href="/portal/admin"
+                  href={isAdminLoggedIn || currentUserRole === 'admin' ? "/portal/admin" : currentUserRole === 'faculty' ? "/portal/faculty" : "/portal/student"}
                   className="flex items-center gap-1 text-[#FA7538] hover:underline font-semibold text-xs"
                 >
                   <User className="w-3.5 h-3.5" />
-                  <span>Admin</span>
+                  <span className="capitalize">{isAdminLoggedIn ? 'Admin Console' : (currentUserRole || 'Dashboard')}</span>
                 </Link>
                 <button
                   type="button"
-                  onClick={() => setIsAdminLoggedIn(false)}
+                  onClick={handleLogout}
                   className="text-slate-400 hover:text-white text-[10px] uppercase font-bold"
-                  title="Logout Admin"
+                  title="Logout"
                 >
                   (Exit)
                 </button>
@@ -251,7 +276,7 @@ export const Header: React.FC = () => {
                     className="block px-3 py-2 text-sm text-slate-700 hover:bg-[#F7F8F9] hover:text-[#FA7538] rounded-xl"
                   >
                     <div className="font-medium">{t('nav.programs')}</div>
-                    <div className="text-xs text-slate-400">B.Voc & M.Sc AI & DS</div>
+                    <div className="text-xs text-slate-400">B.Sc. & M.Sc AI & DS</div>
                   </Link>
                   <Link
                     href="/academics/syllabus"
@@ -385,12 +410,21 @@ export const Header: React.FC = () => {
               </kbd>
             </button>
 
-            <Link
-              href="/portal"
-              className="hidden sm:inline-flex items-center justify-center px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-full bg-[#FA7538] text-white hover:bg-[#E86326] shadow-sm hover:shadow transition-all"
-            >
-              Login
-            </Link>
+            {isLoggedIn ? (
+              <Link
+                href={isAdminLoggedIn || currentUserRole === 'admin' ? "/portal/admin" : currentUserRole === 'faculty' ? "/portal/faculty" : "/portal/student"}
+                className="hidden sm:inline-flex items-center justify-center px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-full bg-[#12192B] text-white hover:bg-[#FA7538] shadow-sm transition-all"
+              >
+                Dashboard
+              </Link>
+            ) : (
+              <Link
+                href="/portal"
+                className="hidden sm:inline-flex items-center justify-center px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-full bg-[#FA7538] text-white hover:bg-[#E86326] shadow-sm hover:shadow transition-all"
+              >
+                Login
+              </Link>
+            )}
 
             <button
               type="button"
@@ -539,14 +573,33 @@ export const Header: React.FC = () => {
                 Gallery
               </Link>
 
-              <div className="pt-3">
-                <Link
-                  href="/portal"
-                  onClick={closeMenus}
-                  className="w-full flex items-center justify-center py-2.5 px-4 rounded-full bg-[#FA7538] text-white font-bold uppercase tracking-wider text-xs"
-                >
-                  Login
-                </Link>
+              <div className="pt-3 flex flex-col gap-2">
+                {isLoggedIn ? (
+                  <>
+                    <Link
+                      href={isAdminLoggedIn || currentUserRole === 'admin' ? "/portal/admin" : currentUserRole === 'faculty' ? "/portal/faculty" : "/portal/student"}
+                      onClick={closeMenus}
+                      className="w-full flex items-center justify-center py-2.5 px-4 rounded-full bg-[#12192B] text-white font-bold uppercase tracking-wider text-xs"
+                    >
+                      My Dashboard
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={handleLogout}
+                      className="w-full flex items-center justify-center py-2.5 px-4 rounded-full bg-slate-100 text-slate-700 hover:bg-slate-200 font-bold uppercase tracking-wider text-xs"
+                    >
+                      Logout / Sign Out
+                    </button>
+                  </>
+                ) : (
+                  <Link
+                    href="/portal"
+                    onClick={closeMenus}
+                    className="w-full flex items-center justify-center py-2.5 px-4 rounded-full bg-[#FA7538] text-white font-bold uppercase tracking-wider text-xs"
+                  >
+                    Login
+                  </Link>
+                )}
               </div>
             </div>
           </div>

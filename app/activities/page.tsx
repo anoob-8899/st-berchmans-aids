@@ -1,4 +1,6 @@
 'use client';
+import { EditableText } from '@/components/shared/EditableText';
+
 
 import React, { useState } from 'react';
 import Link from 'next/link';

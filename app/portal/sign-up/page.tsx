@@ -52,7 +52,7 @@ export default function SignUpPage() {
         <div className="space-y-3 text-center">
           <div className="relative mx-auto h-24 w-24 overflow-hidden rounded-3xl border border-slate-200 bg-white p-2 shadow-sm">
             <Image 
-              src="/images/sb college logo.jpg" 
+              src="/images/sb college logo new.jpg" 
               alt="St. Berchmans College Logo" 
               fill 
               className="object-contain" 

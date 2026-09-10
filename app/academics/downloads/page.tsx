@@ -37,7 +37,7 @@ const DOWNLOAD_ITEMS = [
   },
   {
     id: "dl-4",
-    title: "B.Voc Internship & Industrial Training Assessment Form",
+    title: "B.Sc. Internship & Industrial Training Assessment Form",
     category: "Forms",
     date: "August 10, 2026",
     size: "450 KB",

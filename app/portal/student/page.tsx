@@ -25,7 +25,7 @@ export default function StudentDashboardPage() {
     id: 'stu-default',
     name: 'Student Portal User',
     rollNo: '240101',
-    batch: 'B.Voc AI & DS (2024 - 2027)',
+    batch: 'B.Sc. AI & DS (2024 - 2027)',
     bloodGroup: 'O+ve',
     email: 'student@student.sbcollege.ac.in',
     photo: '/images/sb college logo.jpg',
@@ -322,7 +322,7 @@ export default function StudentDashboardPage() {
                 href="/academics/syllabus"
                 className="p-3 bg-[#F7F8F9] rounded-2xl block hover:bg-purple-50 transition border border-slate-200/80"
               >
-                <div className="font-bold text-slate-800">B.Voc Semester 4 Syllabus</div>
+                <div className="font-bold text-slate-800">B.Sc. Semester 4 Syllabus</div>
                 <div className="text-slate-400 text-[11px]">Regulations 2024-2027 • Approved</div>
               </Link>
               <Link

@@ -1,4 +1,6 @@
 'use client';
+import { EditableText } from '@/components/shared/EditableText';
+
 
 import React, { useState, useMemo } from 'react';
 import { SectionHeading } from '@/components/shared/SectionHeading';
@@ -63,9 +65,7 @@ export default function NotesPage() {
           <span className="inline-block text-xs font-bold uppercase tracking-widest text-[#2E7D50] mb-2">
             Academic Resources
           </span>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight">
-            Academic Notes Repository
-          </h1>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight"><EditableText contentKey="notes.title" defaultValue="Academic Notes Repository" /></h1>
           <p className="text-slate-300 text-sm sm:text-base mt-2 max-w-2xl">
             Official study guides, module summaries, and code notebooks prepared by our faculty members.
           </p>

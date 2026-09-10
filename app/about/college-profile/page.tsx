@@ -1,4 +1,6 @@
 'use client';
+import { EditableText } from '@/components/shared/EditableText';
+
 
 import React from 'react';
 import Image from 'next/image';

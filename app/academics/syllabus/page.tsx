@@ -1,4 +1,6 @@
 'use client';
+import { EditableText } from '@/components/shared/EditableText';
+
 
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
@@ -80,7 +82,7 @@ export default function SyllabusPage() {
 
             {/* Programme Filter */}
             <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto text-xs">
-              {['all', 'B.Voc AI & Data Science', 'M.Sc AI'].map(prog => (
+              {['all', 'B.Sc. AI & Data Science', 'M.Sc AI'].map(prog => (
                 <button
                   key={prog}
                   type="button"

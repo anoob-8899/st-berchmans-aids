@@ -30,7 +30,7 @@ export const COLLEGE_INFO = {
   images: {
     hero: "/images/sb college centre full.jpg",
     aboutCampus: "/images/sb college left full.jpg",
-    logo: "/images/sb college logo.jpg",
+    logo: "/images/sb college logo new.jpg",
     missionVision: "/images/Mission and vission.png",
   }
 };
@@ -38,7 +38,7 @@ export const COLLEGE_INFO = {
 export const ANNOUNCEMENTS: Announcement[] = [
   {
     id: "ann-1",
-    title: "Applications Open for B.Voc & M.Sc AI & Data Science 2026-27 Batch",
+    title: "Applications Open for B.Sc. & M.Sc AI & Data Science 2026-27 Batch",
     titleMl: "2026-27 ബാച്ചിലേക്കുള്ള ബി.വോക് & എം.എസ്.സി എ.ഐ പ്രവേശനത്തിന് അപേക്ഷ ക്ഷണിച്ചു",
     date: "September 05, 2026",
     category: "academic",
@@ -83,11 +83,11 @@ export const LECTURE_NOTES: NoteItem[] = [];
 export const SYLLABUS_LIST: SyllabusItem[] = [
   {
     id: "syl-1",
-    title: "B.Voc Artificial Intelligence & Data Science Curriculum (Regulations 2024)",
-    programme: "B.Voc AI & Data Science",
+    title: "B.Sc. Artificial Intelligence & Data Science Curriculum (Regulations 2024)",
+    programme: "B.Sc. AI & Data Science",
     academicYear: "2024 - 2027",
     semester: 1,
-    fileUrl: "/downloads/syllabus/BVoc_AIDS_Syllabus_2024_2027.pdf",
+    fileUrl: "/downloads/syllabus/BSc_AIDS_Syllabus_2024_2027.pdf",
     fileSize: "2.8 MB",
   },
   {
@@ -100,10 +100,10 @@ export const SYLLABUS_LIST: SyllabusItem[] = [
   },
   {
     id: "syl-3",
-    title: "B.Voc Artificial Intelligence & Data Science (Regulations 2022 Archive)",
-    programme: "B.Voc AI & Data Science",
+    title: "B.Sc. Artificial Intelligence & Data Science (Regulations 2022 Archive)",
+    programme: "B.Sc. AI & Data Science",
     academicYear: "2022 - 2025",
-    fileUrl: "/downloads/syllabus/BVoc_AIDS_Syllabus_2022_2025.pdf",
+    fileUrl: "/downloads/syllabus/BSc_AIDS_Syllabus_2022_2025.pdf",
     fileSize: "2.4 MB",
   }
 ];

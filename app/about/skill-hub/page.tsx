@@ -1,4 +1,6 @@
 'use client';
+import { EditableText } from '@/components/shared/EditableText';
+
 
 import React, { useState } from 'react';
 import Link from 'next/link';
@@ -32,9 +34,7 @@ export default function SkillHubPage() {
           <span className="inline-block text-xs font-bold uppercase tracking-widest text-amber-400 mb-2">
             Skill Development Initiative
           </span>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight">
-            SB Skill Hub (26 Industry Courses)
-          </h1>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight"><EditableText contentKey="skillhub.title" defaultValue="SB Skill Hub (26 Industry Courses)" /></h1>
           <p className="text-slate-300 text-sm sm:text-base mt-2 max-w-2xl">
             Empowering individuals with personal and professional skills through courses conducted in partnership with premier industry agencies.
           </p>

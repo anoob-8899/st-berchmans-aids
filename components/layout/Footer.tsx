@@ -66,7 +66,7 @@ export function Footer() {
             <ul className="space-y-2.5 text-sm">
               <li>
                 <Link href="/academics/programs" className="hover:text-[#FA7538] transition-colors">
-                  B.Voc AI & Data Science
+                  B.Sc. AI & Data Science
                 </Link>
               </li>
               <li>

@@ -1,17 +1,26 @@
+'use client';
+
 import React from 'react';
+import { EditableText } from './EditableText';
 
 interface SectionHeadingProps {
   eyebrow?: string;
+  eyebrowKey?: string;
   title: string;
+  titleKey?: string;
   subtitle?: string;
+  subtitleKey?: string;
   centered?: boolean;
   dark?: boolean;
 }
 
 export const SectionHeading: React.FC<SectionHeadingProps> = ({
   eyebrow,
+  eyebrowKey,
   title,
+  titleKey,
   subtitle,
+  subtitleKey,
   centered = false,
   dark = false,
 }) => {
@@ -25,7 +34,7 @@ export const SectionHeading: React.FC<SectionHeadingProps> = ({
               : 'bg-[#FFF5F0] text-[#FA7538] border border-[#FA7538]/20'
           }`}
         >
-          {eyebrow}
+          {eyebrowKey ? <EditableText contentKey={eyebrowKey} defaultValue={eyebrow} /> : eyebrow}
         </span>
       )}
       <h2
@@ -33,15 +42,15 @@ export const SectionHeading: React.FC<SectionHeadingProps> = ({
           dark ? 'text-white' : 'text-[#1A1A1A]'
         }`}
       >
-        {title}
+        {titleKey ? <EditableText contentKey={titleKey} defaultValue={title} multiline /> : title}
       </h2>
       {subtitle && (
         <p
           className={`text-base sm:text-lg leading-relaxed ${
-            dark ? 'text-slate-300' : 'text-[#5C6470]'
+            dark ? 'text-[#C5D0E6]' : 'text-[#5C6470]'
           }`}
         >
-          {subtitle}
+          {subtitleKey ? <EditableText contentKey={subtitleKey} defaultValue={subtitle} multiline /> : subtitle}
         </p>
       )}
     </div>

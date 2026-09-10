@@ -1,4 +1,6 @@
 'use client';
+import { EditableText } from '@/components/shared/EditableText';
+
 
 import React from 'react';
 import Link from 'next/link';
@@ -22,9 +24,7 @@ export default function ProgramsPage() {
           <span className="inline-block text-xs font-bold uppercase tracking-widest text-[#FA7538] mb-2">
             Degree Offerings
           </span>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight">
-            Academic Programs Offered
-          </h1>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight"><EditableText contentKey="programs.title" defaultValue="Academic Programs Offered" /></h1>
           <p className="text-slate-300 text-sm sm:text-base mt-2 max-w-2xl">
             Autonomous curriculum tailored for real-world artificial intelligence and modern data science engineering.
           </p>
@@ -34,7 +34,7 @@ export default function ProgramsPage() {
       {/* Programs List */}
       <section className="py-16 sm:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-12">
-          {/* Program 1: B.Voc AI & Data Science */}
+          {/* Program 1: B.Sc. AI & Data Science */}
           <div className="bg-[#F7F8F9] p-8 sm:p-12 rounded-3xl border border-slate-200 shadow-sm grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             <div className="lg:col-span-8 space-y-4">
               <div className="flex flex-wrap items-center gap-2">
@@ -47,7 +47,7 @@ export default function ProgramsPage() {
               </div>
 
               <h2 className="text-2xl sm:text-3xl font-extrabold text-[#1A1A1A]">
-                B.Voc in Artificial Intelligence & Data Science
+                B.Sc. in Artificial Intelligence & Data Science
               </h2>
 
               <p className="text-sm sm:text-base text-[#5C6470] leading-relaxed">
@@ -82,7 +82,7 @@ export default function ProgramsPage() {
                 href="/academics/syllabus"
                 className="w-full py-3 px-4 rounded-full bg-[#12192B] text-white font-bold text-xs uppercase tracking-wider hover:bg-[#1C2640] transition block text-center"
               >
-                Download B.Voc Syllabus →
+                Download B.Sc. Syllabus →
               </Link>
             </div>
           </div>
@@ -114,7 +114,7 @@ export default function ProgramsPage() {
                 </div>
                 <div>
                   <span className="text-slate-400 block">Eligibility:</span>
-                  <span className="font-bold text-slate-800">B.Sc / B.Voc / B.Tech</span>
+                  <span className="font-bold text-slate-800">B.Sc / B.Sc. / B.Tech</span>
                 </div>
                 <div>
                   <span className="text-slate-400 block">Research Thesis:</span>

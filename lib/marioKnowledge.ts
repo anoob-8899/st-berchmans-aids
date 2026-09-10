@@ -32,7 +32,7 @@ export const MARIO_KNOWLEDGE_BASE: KnowledgeAnswer[] = [
   },
   {
     keywords: ["syllabus", "curriculum", "semester", "subjects", "regulations", "course"],
-    answerEn: "You can view and download the official autonomous syllabus for B.Voc AI & Data Science and M.Sc Artificial Intelligence directly on our Academics > Syllabus page. It contains semester-wise credit splits, core papers, and elective outlines.",
+    answerEn: "You can view and download the official autonomous syllabus for B.Sc. AI & Data Science and M.Sc Artificial Intelligence directly on our Academics > Syllabus page. It contains semester-wise credit splits, core papers, and elective outlines.",
     answerMl: "ഞങ്ങളുടെ Academics > Syllabus പേജിലൂടെ ബി.വോക് & എം.എസ്.സി എ.ഐ കോഴ്സുകളുടെ ഔദ്യോഗിക ഓട്ടോണമസ് സിലബസ് നിങ്ങൾക്ക് ഡൗൺലോഡ് ചെയ്യാം.",
     relatedLink: "/academics/syllabus"
   },
@@ -74,7 +74,7 @@ export const MARIO_KNOWLEDGE_BASE: KnowledgeAnswer[] = [
   },
   {
     keywords: ["admission", "apply", "eligibility", "fees", "contact", "phone", "email"],
-    answerEn: "For admissions to B.Voc and M.Sc AI & Data Science programs, please visit the official college admission portal at sbcollege.ac.in or contact the department office at aids@sbcollege.ac.in / +91 481 2420025.",
+    answerEn: "For admissions to B.Sc. and M.Sc AI & Data Science programs, please visit the official college admission portal at sbcollege.ac.in or contact the department office at aids@sbcollege.ac.in / +91 481 2420025.",
     answerMl: "ബി.വോക്, എം.എസ്.സി എ.ഐ & ഡാറ്റ സയൻസ് കോഴ്സുകളിലേക്കുള്ള പ്രവേശനത്തിനായി sbcollege.ac.in വെബ്സൈറ്റ് സന്ദർശിക്കുകയോ വകുപ്പ് ഓഫീസുമായി ബന്ധപ്പെടുകയോ ചെയ്യുക: aids@sbcollege.ac.in / +91 481 2420025.",
     relatedLink: "https://sbcollege.ac.in"
   }

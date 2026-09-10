@@ -1,4 +1,6 @@
 'use client';
+import { EditableText } from '@/components/shared/EditableText';
+
 
 import React from 'react';
 import Link from 'next/link';
@@ -23,9 +25,7 @@ export default function DepartmentPage() {
           <span className="inline-block text-xs font-bold uppercase tracking-widest text-[#FA7538] mb-2">
             Academic Unit
           </span>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight">
-            Department of AI & Data Science
-          </h1>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight"><EditableText contentKey="dept.title" defaultValue="Department of AI & Data Science" /></h1>
           <p className="text-slate-300 text-sm sm:text-base mt-2 max-w-2xl">
             Cultivating next-generation machine learning practitioners, deep learning researchers, and ethical data leaders.
           </p>
@@ -80,7 +80,7 @@ export default function DepartmentPage() {
           <div className="bg-[#12192B] text-white p-8 sm:p-10 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-6">
             <div>
               <h3 className="text-xl font-bold mb-2">Want to meet our professors or explore degree options?</h3>
-              <p className="text-sm text-slate-300">Discover B.Voc AI & Data Science and M.Sc AI autonomous programs.</p>
+              <p className="text-sm text-slate-300">Discover B.Sc. AI & Data Science and M.Sc AI autonomous programs.</p>
             </div>
             <div className="flex flex-wrap items-center gap-3">
               <Link
