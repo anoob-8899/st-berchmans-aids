@@ -38,7 +38,8 @@ import {
   Mail,
   User,
   Bot,
-  Brain
+  Brain,
+  Upload
 } from 'lucide-react';
 
 interface PendingItem {
@@ -222,6 +223,24 @@ export default function AdminDashboardPage() {
   const [newUserRole, setNewUserRole] = useState<'student' | 'faculty' | 'admin'>('student');
   const [newUserIdentifier, setNewUserIdentifier] = useState('');
   const [newUserPassword, setNewUserPassword] = useState('SBCollege@2026');
+  const [newUserPhoto, setNewUserPhoto] = useState<string | null>(null);
+
+  const handleNewUserPhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        notify('Please select an image smaller than 5MB.');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (typeof reader.result === 'string') {
+          setNewUserPhoto(reader.result);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const saveUserLogins = (updatedUsers: ManagedUser[]) => {
     setUserLogins(updatedUsers);
@@ -297,7 +316,7 @@ export default function AdminDashboardPage() {
     }
 
     const cleanUserStr = newUserEmail.trim().split('@')[0].toLowerCase();
-    const newUser: ManagedUser & { username?: string; password?: string } = {
+    const newUser: ManagedUser & { username?: string; password?: string; photo?: string } = {
       id: `usr-${Date.now()}`,
       name: newUserName.trim(),
       username: cleanUserStr,
@@ -308,7 +327,8 @@ export default function AdminDashboardPage() {
       status: 'active',
       lastLogin: 'Created by Admin',
       tempPassword: newUserPassword.trim(),
-      password: newUserPassword.trim()
+      password: newUserPassword.trim(),
+      photo: newUserPhoto || '/images/sb college logo.jpg'
     };
 
     let currentLogins = userLogins;
@@ -325,6 +345,7 @@ export default function AdminDashboardPage() {
     setNewUserName('');
     setNewUserEmail('');
     setNewUserIdentifier('');
+    setNewUserPhoto(null);
     notify(`Successfully created and provisioned login for ${newUser.name}!`);
   };
 
@@ -583,7 +604,7 @@ export default function AdminDashboardPage() {
                     Create New Official User Login
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 items-end">
                     <div>
                       <label className="font-bold text-slate-700 block mb-1">Full Name *</label>
                       <input
@@ -630,6 +651,20 @@ export default function AdminDashboardPage() {
                         placeholder="e.g. Roll 240105 / FAC-AI-04"
                         className="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs outline-none focus:ring-2 focus:ring-[#FA7538]"
                       />
+                    </div>
+
+                    <div>
+                      <label className="font-bold text-slate-700 block mb-1">Profile Photo</label>
+                      <label className="cursor-pointer flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-white border border-slate-300 text-xs font-bold text-slate-700 hover:bg-slate-100 transition">
+                        <Upload className="w-3.5 h-3.5 text-[#FA7538]" />
+                        <span>{newUserPhoto ? 'Photo Uploaded' : 'Upload Photo'}</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleNewUserPhotoUpload}
+                          className="hidden"
+                        />
+                      </label>
                     </div>
                   </div>
 

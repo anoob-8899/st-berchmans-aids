@@ -17,7 +17,9 @@ import {
   Droplet,
   Globe,
   ShieldCheck,
-  AlertCircle
+  AlertCircle,
+  Upload,
+  Camera
 } from 'lucide-react';
 
 export default function StudentDashboardPage() {
@@ -59,6 +61,7 @@ export default function StudentDashboardPage() {
           };
           setStudent(activeStudent);
           setName(activeStudent.name);
+          setPhoto(activeStudent.photo);
         }
       } catch (e) {}
     }
@@ -66,12 +69,30 @@ export default function StudentDashboardPage() {
 
   // Edit form fields
   const [name, setName] = useState(student.name);
+  const [photo, setPhoto] = useState(student.photo);
   const [bloodGroup, setBloodGroup] = useState(student.bloodGroup);
   const [linkedIn, setLinkedIn] = useState(student.linkedIn || '');
   const [portfolioUrl, setPortfolioUrl] = useState(student.portfolioUrl || '');
   const [skills, setSkills] = useState(student.skills.join(', '));
   const [selectedWings, setSelectedWings] = useState<CollegeWing[]>(student.wings);
   const [bio, setBio] = useState(student.bio);
+
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        alert('Image file size should be less than 5MB.');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (typeof reader.result === 'string') {
+          setPhoto(reader.result);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const toggleWing = (wing: CollegeWing) => {
     setSelectedWings(prev => 
@@ -81,7 +102,45 @@ export default function StudentDashboardPage() {
 
   const handleSaveProfileEdits = (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulate PRD Section 12/24: Submitted changes go into Admin Review Queue
+    const updatedStudent: Student = {
+      ...student,
+      name,
+      photo,
+      bloodGroup,
+      linkedIn: linkedIn || undefined,
+      portfolioUrl: portfolioUrl || undefined,
+      skills: skills.split(',').map(s => s.trim()).filter(Boolean),
+      wings: selectedWings,
+      bio,
+    };
+    setStudent(updatedStudent);
+
+    // Save to localStorage
+    if (typeof window !== 'undefined') {
+      try {
+        const savedUser = localStorage.getItem('sb_current_user');
+        if (savedUser) {
+          const userObj = JSON.parse(savedUser);
+          userObj.name = name;
+          userObj.photo = photo;
+          localStorage.setItem('sb_current_user', JSON.stringify(userObj));
+        }
+
+        const savedLogins = localStorage.getItem('sb_managed_logins');
+        if (savedLogins) {
+          const logins: any[] = JSON.parse(savedLogins);
+          const updatedLogins = logins.map(u => {
+            if (u.id === student.id || u.name === student.name) {
+              return { ...u, name, photo };
+            }
+            return u;
+          });
+          localStorage.setItem('sb_managed_logins', JSON.stringify(updatedLogins));
+          window.dispatchEvent(new Event('storage'));
+        }
+      } catch (err) {}
+    }
+
     setSubmissionStatus('pending');
     setIsEditing(false);
   };
@@ -164,6 +223,21 @@ export default function StudentDashboardPage() {
             </div>
 
             <form onSubmit={handleSaveProfileEdits} className="space-y-4 text-xs">
+              {/* Profile Picture File Upload */}
+              <div className="p-4 rounded-2xl border border-dashed border-slate-300 bg-slate-50/50 flex flex-col sm:flex-row sm:items-center gap-4">
+                <div className="relative w-16 h-16 rounded-2xl overflow-hidden bg-white border border-slate-200 shadow-xs flex-shrink-0">
+                  <Image src={photo} alt={name} fill className="object-cover" />
+                </div>
+                <div className="flex-1 space-y-1">
+                  <span className="font-bold text-slate-800 block">Change Profile Picture</span>
+                  <p className="text-[11px] text-slate-500">Upload a new photo for your profile (JPEG, PNG, WebP up to 5MB).</p>
+                  <label className="cursor-pointer inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-white border border-slate-200 shadow-xs text-xs font-bold text-slate-700 hover:bg-slate-100 transition mt-1">
+                    <Upload className="w-3.5 h-3.5 text-[#FA7538]" /> Choose Image File
+                    <input type="file" accept="image/*" onChange={handlePhotoUpload} className="hidden" />
+                  </label>
+                </div>
+              </div>
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="font-bold text-slate-700 block mb-1">Full Name</label>

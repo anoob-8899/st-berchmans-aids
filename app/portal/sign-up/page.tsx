@@ -4,7 +4,7 @@ import { FormEvent, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { CheckCircle2, User, Mail, Lock, ShieldCheck, ArrowLeft, ArrowRight, Key } from 'lucide-react';
+import { CheckCircle2, User, Mail, Lock, ShieldCheck, ArrowLeft, ArrowRight, Key, Upload, Camera } from 'lucide-react';
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -14,7 +14,25 @@ export default function SignUpPage() {
   const [role, setRole] = useState<'student' | 'faculty'>('student');
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
+  const [photo, setPhoto] = useState<string | null>(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
+
+  function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        alert('Please select an image smaller than 5MB.');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (typeof reader.result === 'string') {
+          setPhoto(reader.result);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  }
 
   function handleSignUp(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -32,7 +50,8 @@ export default function SignUpPage() {
       status: 'pending', // Pending Admin Approval
       approvalStatus: 'pending',
       lastLogin: 'Pending Approval',
-      password: password.trim() || 'SBCollege@2026'
+      password: password.trim() || 'SBCollege@2026',
+      photo: photo || '/images/sb college logo.jpg'
     };
 
     if (typeof window !== 'undefined') {
@@ -135,6 +154,35 @@ export default function SignUpPage() {
                 >
                   Faculty
                 </button>
+              </div>
+            </div>
+
+            {/* Profile Picture Upload */}
+            <div>
+              <label className="font-bold text-slate-700 block mb-1">
+                Profile Picture (Optional)
+              </label>
+              <div className="flex items-center gap-3 p-3 rounded-2xl border border-dashed border-slate-300 bg-slate-50/50 hover:bg-slate-50 transition">
+                <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-slate-200 border border-slate-300 flex-shrink-0 flex items-center justify-center text-slate-400 font-bold">
+                  {photo ? (
+                    <Image src={photo} alt="Profile Preview" fill className="object-cover" />
+                  ) : (
+                    <Camera className="w-6 h-6 text-slate-400" />
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <label className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-slate-200 shadow-xs text-xs font-bold text-slate-700 hover:bg-slate-100 transition">
+                    <Upload className="w-3.5 h-3.5 text-[#FA7538]" />
+                    {photo ? 'Change Photo' : 'Upload Photo'}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handlePhotoChange}
+                      className="hidden"
+                    />
+                  </label>
+                  <p className="text-[10px] text-slate-400 mt-1">PNG, JPG, WebP up to 5MB</p>
+                </div>
               </div>
             </div>
 
