@@ -143,7 +143,7 @@ export default function StudentDashboardPage() {
       } catch (err) {}
     }
 
-    setSubmissionStatus('pending');
+    setSubmissionStatus('approved');
     setIsEditing(false);
   };
 
@@ -201,27 +201,12 @@ export default function StudentDashboardPage() {
           </div>
         </div>
 
-        {/* Admin Review Status Banner (PRD Section 12 & 24) */}
-        {submissionStatus === 'pending' && (
-          <div className="p-4 bg-amber-50 rounded-2xl border border-amber-200 flex items-center justify-between text-xs text-amber-900">
-            <div className="flex items-center gap-2">
-              <Clock className="w-4 h-4 text-amber-600 animate-spin" />
-              <span>
-                <strong>Profile Edits Submitted for Admin Moderation:</strong> Your updated skills, bio, and wings are currently awaiting administrator verification before going live.
-              </span>
-            </div>
-            <span className="font-bold bg-amber-200/80 px-2.5 py-0.5 rounded-full">
-              Status: Pending Approval
-            </span>
-          </div>
-        )}
-
         {/* Profile Edit Form Modal / Inline Box */}
         {isEditing && (
           <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-md space-y-6">
             <div className="border-b border-slate-100 pb-3">
               <h3 className="text-lg font-bold text-[#1A1A1A]">Edit Student Academic Profile</h3>
-              <p className="text-xs text-slate-400">Updates are moderated by the department administration.</p>
+              <p className="text-xs text-slate-400">Profile updates take effect immediately on your account.</p>
             </div>
 
             <form onSubmit={handleSaveProfile} className="space-y-4 text-xs">

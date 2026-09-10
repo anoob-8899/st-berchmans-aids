@@ -88,22 +88,20 @@ export default function PortalLoginPage() {
           return;
         }
 
-        // If user had one-time permission granted by admin, consume it now & save to server
-        if (matchedUser.oneTimePermission) {
-          const updatedUser = { 
-            ...matchedUser, 
-            oneTimePermission: false, 
-            status: 'pending' as const, 
-            lastLogin: `1-Time Permission Used (${new Date().toLocaleTimeString()})` 
-          };
-          await saveUserAccount(updatedUser);
-        }
+        // Update last login timestamp for active user
+        const updatedUser = { 
+          ...matchedUser, 
+          oneTimePermission: false,
+          status: 'active' as const,
+          lastLogin: new Date().toLocaleString()
+        };
+        await saveUserAccount(updatedUser);
 
         // Active user authenticated
         if (typeof window !== 'undefined') {
           localStorage.setItem('sb_user_role', matchedUser.role);
           localStorage.setItem('sb_current_role', matchedUser.role);
-          localStorage.setItem('sb_current_user', JSON.stringify(matchedUser));
+          localStorage.setItem('sb_current_user', JSON.stringify(updatedUser));
           localStorage.setItem('sb_logged_in', 'true');
         }
 
