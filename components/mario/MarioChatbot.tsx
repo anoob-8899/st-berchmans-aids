@@ -88,7 +88,7 @@ export const MarioChatbot: React.FC = () => {
   return (
     <>
       {/* Reduced to Small Circle Button (Requirement 5) */}
-      <div className="fixed bottom-6 right-6 z-40">
+      <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40">
         {!isOpen && (
           <div className="relative group">
             <button
@@ -116,7 +116,7 @@ export const MarioChatbot: React.FC = () => {
 
       {/* Interactive Chat Window */}
       {isOpen && (
-        <div className="fixed bottom-6 right-6 z-50 w-full max-w-sm sm:max-w-md bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col h-[560px] animate-scale-up">
+        <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 w-[calc(100vw-32px)] max-w-sm sm:max-w-md bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col h-[560px] animate-scale-up">
           {/* Header */}
           <div className="bg-[#12192B] text-white p-4 flex items-center justify-between border-b border-slate-800">
             <div className="flex items-center gap-3">

@@ -178,7 +178,7 @@ export const Header: React.FC = () => {
           
           {/* Logo only - enlarged and crisp (Requirement 3) */}
           <Link href="/" className="flex items-center group px-1" onClick={closeMenus}>
-            <div className="relative h-13 sm:h-14 md:h-16 w-60 sm:w-72 md:w-84 flex-shrink-0">
+            <div className="relative h-10 sm:h-13 md:h-16 w-44 xs:w-56 sm:w-72 md:w-84 flex-shrink-0">
               <Image
                 src="/images/college icon.png"
                 alt="St Berchmans College Autonomous"

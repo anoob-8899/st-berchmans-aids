@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useLanguage } from '@/lib/LanguageContext';
+import { useAdminEdit } from '@/lib/AdminEditContext';
 import { SectionHeading } from '@/components/shared/SectionHeading';
 import { RatingStars } from '@/components/shared/RatingStars';
 import { EditableText } from '@/components/shared/EditableText';
@@ -39,6 +40,14 @@ import {
 
 export default function HomePage() {
   const { language, t } = useLanguage();
+  const { isAdminLoggedIn } = useAdminEdit();
+  const [userRole, setUserRole] = React.useState<string | null>(null);
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setUserRole(localStorage.getItem('sb_current_role'));
+    }
+  }, [isAdminLoggedIn]);
+  const isLoggedIn = isAdminLoggedIn || !!userRole;
 
   return (
     <div className="flex flex-col">
@@ -57,13 +66,13 @@ export default function HomePage() {
           <div className="absolute inset-0 bg-gradient-to-t from-[#12192B] via-transparent to-transparent" />
         </div>
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-24">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-20 md:py-24">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
             
             {/* Left Content Column */}
-            <div className="lg:col-span-7 space-y-6">
-              {/* Main Headline (Admin in-place editable) */}
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-tight">
+            <div className="lg:col-span-7 space-y-5 text-center lg:text-left">
+              {/* Main Headline */}
+              <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-tight">
                 <EditableText
                   contentKey="home.hero.title"
                   defaultValue={t('hero.title')}
@@ -72,8 +81,8 @@ export default function HomePage() {
                 />
               </h1>
 
-              {/* Subtitle (Admin in-place editable) */}
-              <div className="text-base sm:text-lg text-slate-300 leading-relaxed font-normal max-w-2xl">
+              {/* Subtitle */}
+              <div className="text-xs sm:text-base md:text-lg text-slate-300 leading-relaxed font-normal max-w-2xl mx-auto lg:mx-0">
                 <EditableText
                   contentKey="home.hero.subtitle"
                   defaultValue={t('hero.subtitle')}
@@ -82,32 +91,39 @@ export default function HomePage() {
                 />
               </div>
 
-              {/* Dual CTA Buttons - Explore Department with ONLY orange border (Requirement 7) */}
-              <div className="pt-3 flex flex-wrap items-center gap-4">
+              {/* Dual CTA Buttons */}
+              <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center justify-center lg:justify-start gap-3 w-full sm:w-auto">
                 <Link
                   href="/about/department"
-                  className="inline-flex items-center justify-center px-7 py-3.5 rounded-full text-sm font-bold uppercase tracking-wider bg-transparent text-white border-2 border-[#FA7538] hover:bg-[#FA7538] hover:text-white shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all"
+                  className="inline-flex items-center justify-center px-6 py-3 rounded-full text-xs sm:text-sm font-bold uppercase tracking-wider bg-transparent text-white border-2 border-[#FA7538] hover:bg-[#FA7538] hover:text-white shadow-sm transition-all"
                 >
                   {t('hero.cta.explore')}
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Link>
 
-                <Link
-                  href="/portal"
-                  className="inline-flex items-center justify-center px-7 py-3.5 rounded-full text-sm font-bold uppercase tracking-wider bg-transparent text-white border-2 border-slate-400 hover:border-white hover:bg-white/10 transition-all"
-                >
-                  Login
-                </Link>
+                {isLoggedIn ? (
+                  <Link
+                    href={isAdminLoggedIn || userRole === 'admin' ? "/portal/admin" : userRole === 'faculty' ? "/portal/faculty" : "/portal/student"}
+                    className="inline-flex items-center justify-center px-6 py-3 rounded-full text-xs sm:text-sm font-bold uppercase tracking-wider bg-transparent text-white border-2 border-slate-300/80 hover:border-white hover:bg-white/10 transition-all"
+                  >
+                    My Dashboard
+                  </Link>
+                ) : (
+                  <Link
+                    href="/portal"
+                    className="inline-flex items-center justify-center px-6 py-3 rounded-full text-xs sm:text-sm font-bold uppercase tracking-wider bg-transparent text-white border-2 border-slate-300/80 hover:border-white hover:bg-white/10 transition-all"
+                  >
+                    Login
+                  </Link>
+                )}
               </div>
             </div>
 
-            {/* Right Column: Beautifully Aligned & Framed Architectural Watermark Showcase (Requirement 5) */}
-            <div className="lg:col-span-5 flex justify-center lg:justify-end relative pt-6 lg:pt-0">
-              {/* Subtle ambient light aura */}
-              <div className="absolute -inset-4 rounded-full bg-gradient-to-tr from-[#FA7538]/25 via-emerald-500/15 to-blue-500/20 blur-3xl opacity-60 pointer-events-none" />
+            {/* Right Column: Watermark Medallion Showcase */}
+            <div className="lg:col-span-5 flex justify-center lg:justify-end relative pt-4 lg:pt-0">
+              <div className="absolute -inset-4 rounded-full bg-gradient-to-tr from-[#FA7538]/20 via-emerald-500/15 to-blue-500/20 blur-2xl opacity-60 pointer-events-none" />
               
-              {/* Concentric Glassmorphism Framed Medallion */}
-              <div className="relative w-[280px] h-[280px] sm:w-[360px] sm:h-[360px] md:w-[420px] md:h-[420px] rounded-full p-3 border-2 border-white/20 bg-[#1A243B]/40 backdrop-blur-md shadow-2xl transition-all duration-500 hover:scale-[1.02] group">
+              <div className="relative w-[210px] h-[210px] xs:w-[260px] xs:h-[260px] sm:w-[340px] sm:h-[340px] md:w-[400px] md:h-[400px] rounded-full p-2.5 sm:p-3 border-2 border-white/20 bg-[#1A243B]/40 backdrop-blur-md shadow-2xl transition-all duration-500 hover:scale-[1.02] group">
                 <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-white/25 shadow-inner">
                   <Image
                     src="/images/sb college centre full.jpg"
