@@ -304,16 +304,39 @@ export default function AdminDashboardPage() {
     notify(`Temporary password generated for ${target?.name}: ${tempPass}`);
   };
 
-  // Delete user login
+  // Delete user login and student profile
   const handleDeleteUser = async (userId: string, name: string) => {
     if (userId === 'admin-main' || name.toLowerCase().includes('adminaids') || name.toLowerCase().includes('chief administrator')) {
       notify('Chief Administrator (adminaids) cannot be deleted.');
       return;
     }
-    if (confirm(`Are you sure you want to revoke login access and remove ${name}?`)) {
+    if (confirm(`Are you sure you want to permanently delete profile & login access for ${name}?`)) {
       const updated = await deleteUserAccount(userId);
       setUserLogins(updated);
-      notify(`Login credentials deleted for ${name}`);
+      
+      // Delete from student directory store as well
+      try {
+        await Promise.all([
+          fetch(`/api/students?id=${encodeURIComponent(userId)}`, { method: 'DELETE' }),
+          fetch(`/api/students?id=${encodeURIComponent(name)}`, { method: 'DELETE' })
+        ]);
+      } catch (e) {}
+
+      notify(`Profile and login credentials permanently deleted for ${name}`);
+    }
+  };
+
+  const handleDeleteStudentProfile = async (id: string, name: string) => {
+    if (confirm(`Are you sure you want to remove ${name}'s student directory profile?`)) {
+      try {
+        await fetch(`/api/students?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
+        await deleteUserAccount(id);
+        notify(`Successfully deleted student profile for ${name}`);
+        const users = await fetchManagedUsers();
+        if (users) setUserLogins(users);
+      } catch (e) {
+        notify('Failed to delete student profile.');
+      }
     }
   };
 
@@ -869,14 +892,15 @@ export default function AdminDashboardPage() {
                               <Key className="w-3.5 h-3.5 text-amber-600" />
                             </button>
 
-                            {/* Delete User Login */}
+                            {/* Delete User Login & Profile */}
                             <button
                               type="button"
                               onClick={() => handleDeleteUser(user.id, user.name)}
-                              className="p-1.5 rounded-lg border border-slate-200 text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition"
-                              title="Delete user login"
+                              className="px-2.5 py-1.5 rounded-lg border border-rose-200 text-rose-600 hover:bg-rose-600 hover:text-white font-bold text-[11px] uppercase tracking-wider flex items-center gap-1 transition cursor-pointer"
+                              title="Permanently delete user profile and access credentials"
                             >
                               <Trash2 className="w-3.5 h-3.5" />
+                              <span className="hidden lg:inline">Delete Profile</span>
                             </button>
                           </div>
                         </td>

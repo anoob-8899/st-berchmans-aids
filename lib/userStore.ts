@@ -103,9 +103,21 @@ export function saveOrUpdateUser(user: ManagedUser): ManagedUser[] {
   return users;
 }
 
+import { deleteStudent } from './studentStore';
+
 export function deleteUser(id: string): ManagedUser[] {
   const users = readUsers();
+  const target = users.find(u => u.id === id || (u.email && u.email.toLowerCase() === id.toLowerCase()));
   const filtered = users.filter(u => u.id !== id && u.id !== 'admin-main');
   writeUsers(filtered);
+
+  if (target) {
+    deleteStudent(target.id);
+    if (target.email) deleteStudent(target.email);
+    if (target.name) deleteStudent(target.name);
+  } else {
+    deleteStudent(id);
+  }
+
   return filtered;
 }

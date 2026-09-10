@@ -3,7 +3,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { INITIAL_STUDENTS, INITIAL_PROJECTS, ACHIEVEMENTS } from '@/lib/mockData';
 import { 
   ArrowLeft, 
@@ -15,12 +15,25 @@ import {
   Sparkles,
   CheckCircle2,
   ExternalLink,
-  User
+  User,
+  Trash2
 } from 'lucide-react';
 
 export default function StudentDetailPage() {
   const params = useParams();
+  const router = useRouter();
   const studentId = params?.id as string;
+  const [isAdmin, setIsAdmin] = React.useState(false);
+
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const adminSaved = localStorage.getItem('sb_admin_logged_in');
+      const currentUser = localStorage.getItem('sb_current_user');
+      if (adminSaved === 'true' || (currentUser && JSON.parse(currentUser).role === 'admin')) {
+        setIsAdmin(true);
+      }
+    }
+  }, []);
 
   const [student, setStudent] = React.useState<any>(() => {
     return INITIAL_STUDENTS.find(s => s.id === studentId || s.rollNo === studentId) || INITIAL_STUDENTS[0];
@@ -79,17 +92,47 @@ export default function StudentDetailPage() {
     a.taggedStudentIds.includes(student.id) || a.studentNames.includes(student.name)
   );
 
+  const handleDeleteThisProfile = async () => {
+    if (!student) return;
+    if (confirm(`Are you sure you want to permanently delete profile for ${student.name}?`)) {
+      try {
+        await Promise.all([
+          fetch(`/api/students?id=${encodeURIComponent(student.id)}`, { method: 'DELETE' }),
+          fetch(`/api/students?id=${encodeURIComponent(student.name)}`, { method: 'DELETE' }),
+          fetch(`/api/users?id=${encodeURIComponent(student.id)}`, { method: 'DELETE' })
+        ]);
+        alert(`Profile for ${student.name} deleted.`);
+        router.push('/people/students');
+      } catch (err) {
+        alert('Failed to delete profile.');
+      }
+    }
+  };
+
   return (
     <div className="bg-white min-h-screen">
       {/* Top Banner */}
       <section className="bg-[#12192B] text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <Link
-            href="/people/students"
-            className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-white mb-6 transition"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" /> Back to Students Directory
-          </Link>
+          <div className="flex items-center justify-between mb-6">
+            <Link
+              href="/people/students"
+              className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" /> Back to Students Directory
+            </Link>
+
+            {isAdmin && (
+              <button
+                type="button"
+                onClick={handleDeleteThisProfile}
+                className="px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-rose-600 hover:bg-rose-700 text-white transition flex items-center gap-1.5 shadow-sm cursor-pointer"
+                title="Permanently delete this student profile (Admin)"
+              >
+                <Trash2 className="w-3.5 h-3.5" /> Delete Profile (Admin)
+              </button>
+            )}
+          </div>
 
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
             <div className="relative w-28 h-28 sm:w-36 sm:h-36 rounded-3xl overflow-hidden border-4 border-white/20 shadow-2xl flex-shrink-0 bg-slate-700">

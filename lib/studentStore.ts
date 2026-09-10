@@ -158,3 +158,29 @@ export function getStudentById(id: string): Student | undefined {
   );
 }
 
+export function deleteStudent(id: string): Student[] {
+  try {
+    const filePath = getStudentsFilePath();
+    let students: Student[] = [];
+    if (fs.existsSync(filePath)) {
+      try {
+        const data = fs.readFileSync(filePath, 'utf-8');
+        students = JSON.parse(data);
+      } catch (e) {}
+    }
+    const lowerId = id.toLowerCase();
+    const filtered = students.filter(s => 
+      s.id !== id && 
+      s.rollNo !== id && 
+      s.name.toLowerCase() !== lowerId &&
+      (!s.email || s.email.toLowerCase() !== lowerId)
+    );
+    writeStudents(filtered);
+    return filtered;
+  } catch (error) {
+    console.error('Error deleting student:', error);
+    return [];
+  }
+}
+
+

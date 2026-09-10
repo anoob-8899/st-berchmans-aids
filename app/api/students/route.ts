@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { readStudents, writeStudents, saveOrUpdateStudent, getStudentById } from '@/lib/studentStore';
+import { readStudents, writeStudents, saveOrUpdateStudent, getStudentById, deleteStudent } from '@/lib/studentStore';
 
 export async function GET(req: NextRequest) {
   try {
@@ -43,3 +43,20 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
+
+export async function DELETE(req: NextRequest) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get('id');
+
+    if (!id) {
+      return NextResponse.json({ success: false, error: 'Student ID is required' }, { status: 400 });
+    }
+
+    const updated = deleteStudent(id);
+    return NextResponse.json({ success: true, students: updated });
+  } catch (error: any) {
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  }
+}
+
