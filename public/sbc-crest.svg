@@ -1,0 +1,27 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 130" width="120" height="130">
+  <defs>
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#005691"/>
+      <stop offset="50%" stop-color="#093f6c"/>
+      <stop offset="100%" stop-color="#052c4d"/>
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fcd34d"/>
+      <stop offset="50%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#b45309"/>
+    </linearGradient>
+  </defs>
+  <path d="M 60 4 C 88 4 114 8 114 36 C 114 78 88 108 60 126 C 32 108 6 78 6 36 C 6 8 32 4 60 4 Z" fill="url(#goldGrad)" stroke="#78350f" stroke-width="1.5"/>
+  <path d="M 60 9 C 84 9 108 12 108 38 C 108 74 84 102 60 119 C 36 102 12 74 12 38 C 12 12 36 9 60 9 Z" fill="url(#shieldGrad)" stroke="#fcd34d" stroke-width="1.5"/>
+  <path d="M 57 16 H 63 V 24 H 71 V 30 H 63 V 46 H 57 V 30 H 49 V 24 H 57 Z" fill="url(#goldGrad)"/>
+  <g transform="translate(30, 48)">
+    <path d="M 30 18 C 22 14 12 14 2 16 L 2 38 C 12 36 22 36 30 40 C 38 36 48 36 58 38 L 58 16 C 48 14 38 14 30 18 Z" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+    <line x1="30" y1="18" x2="30" y2="40" stroke="#94a3b8" stroke-width="1.5"/>
+    <line x1="7" y1="21" x2="25" y2="20" stroke="#005691" stroke-width="1.2"/>
+    <line x1="7" y1="26" x2="25" y2="25" stroke="#005691" stroke-width="1.2"/>
+    <line x1="35" y1="20" x2="53" y2="21" stroke="#005691" stroke-width="1.2"/>
+    <line x1="35" y1="25" x2="53" y2="26" stroke="#005691" stroke-width="1.2"/>
+  </g>
+  <path d="M 20 95 Q 60 106 100 95 L 96 106 Q 60 116 24 106 Z" fill="url(#goldGrad)" stroke="#b45309" stroke-width="0.8"/>
+  <text x="60" y="103" text-anchor="middle" font-family="'Times New Roman', serif" font-weight="bold" font-size="6" fill="#1e293b">ESTD 1922</text>
+</svg>

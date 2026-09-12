@@ -1,0 +1,245 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  username     String   @unique
+  email        String?  @unique
+  passwordHash String
+  role         String   @default("STUDENT")
+  status       String   @default("PENDING")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  studentProfile StudentProfile?
+  facultyProfile FacultyProfile?
+  uploadedNotes  AcademicNote[]
+  galleryItems   GalleryItem[]
+  eventsCreated  Event[]
+  chatSessions   ChatSession[]
+
+  @@index([role])
+  @@index([status])
+}
+
+model StudentProfile {
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fullName       String
+  email          String?
+  phone          String?
+  batch          String   @default("2026-2030")
+  registerNumber String?  @unique
+  semester       Int      @default(1)
+  bio            String?
+  avatarUrl      String?
+  githubUrl      String?
+  linkedinUrl    String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  projects               StudentProject[]
+  coCurricularMemberships CoCurricularMembership[]
+
+  @@index([batch])
+  @@index([semester])
+}
+
+model FacultyProfile {
+  id             String   @id @default(cuid())
+  userId         String?  @unique
+  user           User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  name           String
+  designation    String
+  degrees        String
+  experience     String
+  specialization String
+  publications   String?
+  email          String   @unique
+  phone          String?
+  initials       String
+  avatarUrl      String?
+  displayOrder   Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  notes AcademicNote[]
+
+  @@index([displayOrder])
+}
+
+model Subject {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  name        String
+  semester    Int
+  description String?
+  credits     Int      @default(3)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  notes AcademicNote[]
+
+  @@index([semester])
+}
+
+model AcademicNote {
+  id               String          @id @default(cuid())
+  title            String
+  subjectId        String?
+  subject          Subject?        @relation(fields: [subjectId], references: [id], onDelete: SetNull)
+  subjectName      String
+  semester         Int
+  fileUrl          String
+  fileType         String          @default("PDF")
+  fileSize         String?
+  approved         Boolean         @default(true)
+  uploaderId       String?
+  uploader         User?           @relation(fields: [uploaderId], references: [id], onDelete: SetNull)
+  facultyProfileId String?
+  facultyProfile   FacultyProfile? @relation(fields: [facultyProfileId], references: [id], onDelete: SetNull)
+  uploadedByName   String
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+
+  @@index([semester])
+  @@index([subjectId])
+  @@index([uploaderId])
+}
+
+model StudentProject {
+  id               String          @id @default(cuid())
+  studentProfileId String?
+  studentProfile   StudentProfile? @relation(fields: [studentProfileId], references: [id], onDelete: Cascade)
+  title            String
+  domain           String
+  summary          String
+  description      String?
+  githubUrl        String?
+  demoUrl          String?
+  team             String
+  isFeatured       Boolean         @default(false)
+  approved         Boolean         @default(true)
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+
+  @@index([studentProfileId])
+  @@index([domain])
+}
+
+model CoCurricularWing {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String
+  icon        String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  memberships CoCurricularMembership[]
+}
+
+model CoCurricularMembership {
+  id               String           @id @default(cuid())
+  studentProfileId String
+  studentProfile   StudentProfile   @relation(fields: [studentProfileId], references: [id], onDelete: Cascade)
+  wingId           String
+  wing             CoCurricularWing @relation(fields: [wingId], references: [id], onDelete: Cascade)
+  role             String           @default("Member")
+  joinedAt         DateTime         @default(now())
+
+  @@unique([studentProfileId, wingId])
+  @@index([studentProfileId])
+  @@index([wingId])
+}
+
+model Event {
+  id              String   @id @default(cuid())
+  title           String
+  slug            String   @unique
+  description     String
+  venue           String
+  eventDate       DateTime
+  category        String   @default("ACADEMIC")
+  bannerUrl       String?
+  registrationUrl String?
+  isFeatured      Boolean  @default(false)
+  createdById     String?
+  createdBy       User?    @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([eventDate])
+  @@index([category])
+}
+
+model GalleryItem {
+  id         String   @id @default(cuid())
+  title      String?
+  caption    String?
+  imageUrl   String
+  category   String   @default("CAMPUS")
+  uploaderId String?
+  uploader   User?    @relation(fields: [uploaderId], references: [id], onDelete: SetNull)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([category])
+  @@index([uploaderId])
+}
+
+model ChatSession {
+  id        String   @id @default(cuid())
+  sessionId String   @unique
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  messages ChatMessage[]
+
+  @@index([userId])
+}
+
+model ChatMessage {
+  id            String      @id @default(cuid())
+  chatSessionId String
+  chatSession   ChatSession @relation(fields: [chatSessionId], references: [id], onDelete: Cascade)
+  role          String
+  content       String
+  sources       String?
+  createdAt     DateTime    @default(now())
+
+  @@index([chatSessionId])
+}
+
+model TickerItem {
+  id           String   @id @default(cuid())
+  text         String
+  isNew        Boolean  @default(false)
+  link         String
+  displayOrder Int      @default(0)
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model AdmissionEnquiry {
+  id        String   @id @default(cuid())
+  fullName  String
+  email     String
+  phone     String
+  stream    String
+  marks     String
+  city      String?
+  status    String   @default("PENDING")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
